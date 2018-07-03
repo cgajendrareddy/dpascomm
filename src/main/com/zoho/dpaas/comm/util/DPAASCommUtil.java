@@ -1,5 +1,5 @@
 //$Id$
-package com.zoho.streamline.comm.dpas.job;
+package com.zoho.dpaas.comm.util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,7 +8,7 @@ import org.json.JSONObject;
  * Created by elam-4191 on 5/22/2017.
  *
  */
-public class Util {
+public class DPAASCommUtil {
 
     public enum JobState {
         INPROGRESS,
