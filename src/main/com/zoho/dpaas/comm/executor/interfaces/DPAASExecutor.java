@@ -1,12 +1,12 @@
 //$Id$
-package com.zoho.dpaas.comm.executor.intrface;
+package com.zoho.dpaas.comm.executor.interfaces;
 
-import static com.zoho.dpaas.comm.util.DPAASCommUtil.*;
-
+import com.zoho.dpaas.comm.executor.conf.DPAASExecutorConf;
 import com.zoho.dpaas.comm.executor.exception.DPAASExecutorException;
-import org.json.JSONObject;
 
 import javax.print.attribute.standard.JobState;
+
+import static com.zoho.dpaas.comm.util.DPAASCommUtil.ExecutorType;
 
 public interface DPAASExecutor {
     /**
@@ -25,7 +25,7 @@ public interface DPAASExecutor {
      * Get config JSON
      * @return
      */
-    public JSONObject getConf();
+    public DPAASExecutorConf getConf();
 
     /**
      * Get ExecutorType of DPAASExecutor

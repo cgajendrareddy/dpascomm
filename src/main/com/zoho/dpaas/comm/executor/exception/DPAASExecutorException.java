@@ -1,7 +1,7 @@
 //$Id$
 package com.zoho.dpaas.comm.executor.exception;
 
-import com.zoho.dpaas.comm.executor.intrface.DPAASExecutor;
+import com.zoho.dpaas.comm.executor.interfaces.DPAASExecutor;
 import lombok.Getter;
 
 public class DPAASExecutorException extends Exception{

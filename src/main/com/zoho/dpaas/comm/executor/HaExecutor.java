@@ -1,21 +1,25 @@
-package com.zoho.dpaas.comm.executor.intrface;
+package com.zoho.dpaas.comm.executor;
 
 import com.zoho.dpaas.comm.executor.exception.DPAASExecutorException;
 import com.zoho.dpaas.comm.executor.exception.DPAASHAExecutorException;
+import com.zoho.dpaas.comm.executor.interfaces.AbstractDPAASExecutor;
+import com.zoho.dpaas.comm.executor.interfaces.DPAASExecutor;
 
 import javax.print.attribute.standard.JobState;
-import java.util.*;
+import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
-public class HaExecutor extends  AbstractDPAASExecutor{
+public class HaExecutor extends AbstractDPAASExecutor {
 
 
     Queue<DPAASExecutor> executorQueue;
     Queue<DPAASExecutor> failedExecutorQueue =new ArrayBlockingQueue<>(2);
     DPAASExecutor currentExecutor;
-    boolean currentExecutorRunning;
+    boolean isAlive;
 
     public HaExecutor(Queue<DPAASExecutor> executors) throws DPAASHAExecutorException {
+        //TODO for now
+        super(null);
         if(executors!=null &&executors.size()>=2) {
             this.executorQueue=executors;
             currentExecutor=executorQueue.element();
@@ -36,7 +40,7 @@ public class HaExecutor extends  AbstractDPAASExecutor{
                 try {
                     return executor.submit(appArgs);
                 } catch (DPAASExecutorException e1) {
-                    currentExecutorRunning=false;
+                    isAlive =false;
                 }
             }
         }
@@ -55,7 +59,7 @@ public class HaExecutor extends  AbstractDPAASExecutor{
                 try {
                     return executor.killJob(jobId);
                 } catch (DPAASExecutorException e1) {
-                    currentExecutorRunning=false;
+                    isAlive =false;
                 }
             }
         }
@@ -74,7 +78,7 @@ public class HaExecutor extends  AbstractDPAASExecutor{
                 try {
                     return executor.getJobState(jobId);
                 } catch (DPAASExecutorException e1) {
-                    currentExecutorRunning=false;
+                    isAlive =false;
                 }
             }
         }
@@ -91,7 +95,7 @@ public class HaExecutor extends  AbstractDPAASExecutor{
      * @throws DPAASHAExecutorException thrown when all the executors are failed.
      */
     private DPAASExecutor getExecutor() throws DPAASHAExecutorException {
-        if(currentExecutorRunning)return currentExecutor;
+        if(isAlive)return currentExecutor;
         failedExecutorQueue.add(executorQueue.poll());
         if(executorQueue.isEmpty())
         {

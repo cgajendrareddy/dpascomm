@@ -1,31 +1,40 @@
-package com.zoho.dpaas.comm.executor.intrface;
+package com.zoho.dpaas.comm.executor.interfaces;
 
-import com.zoho.dpaas.comm.util.DPAASCommUtil;
+import com.zoho.dpaas.comm.executor.conf.DPAASExecutorConf;
 import com.zoho.dpaas.comm.executor.exception.DPAASExecutorException;
-import org.json.JSONObject;
+import lombok.NonNull;
 
 import javax.print.attribute.standard.JobState;
 
+import static com.zoho.dpaas.comm.util.DPAASCommUtil.ExecutorType;
+
+
 public abstract class AbstractDPAASExecutor implements DPAASExecutor {
+    @NonNull
+    DPAASExecutorConf executorConf;
+
+
+    public AbstractDPAASExecutor(DPAASExecutorConf executorConf){
+        this.executorConf = executorConf;
+    }
+
     @Override
     public int getId() {
-        return 0;
+        return this.executorConf.getId();
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return this.executorConf.getDisabled();
     }
 
     @Override
-    public JSONObject getConf() {
-        return null;
+    public DPAASExecutorConf getConf() {
+        return this.executorConf;
     }
 
     @Override
-    public DPAASCommUtil.ExecutorType getType() {
-        return null;
-    }
+    public ExecutorType getType() { return this.executorConf.getType(); }
 
     @Override
     public String submit(String... appArgs) throws DPAASExecutorException {
