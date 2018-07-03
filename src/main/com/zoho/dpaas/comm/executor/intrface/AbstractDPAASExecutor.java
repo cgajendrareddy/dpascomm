@@ -1,7 +1,7 @@
 package com.zoho.dpaas.comm.executor.intrface;
 
 import com.zoho.dpaas.comm.util.DPAASCommUtil;
-import com.zoho.streamline.comm.dpas.exception.DPAASExecutorException;
+import com.zoho.dpaas.comm.executor.exception.DPAASExecutorException;
 import org.json.JSONObject;
 
 import javax.print.attribute.standard.JobState;

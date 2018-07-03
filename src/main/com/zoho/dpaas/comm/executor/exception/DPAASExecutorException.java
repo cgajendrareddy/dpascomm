@@ -1,9 +1,11 @@
 //$Id$
-package com.zoho.streamline.comm.dpas.exception;
+package com.zoho.dpaas.comm.executor.exception;
 
 import com.zoho.dpaas.comm.executor.intrface.DPAASExecutor;
+import lombok.Getter;
 
 public class DPAASExecutorException extends Exception{
+    @Getter
     DPAASExecutor executor;
     /**
      * @param message
