@@ -10,6 +10,7 @@ import java.util.List;
 public class SJSExecutorConf extends DPAASExecutorConf {
     private List<String> jobs;
     private String sjsURL;
+    private Integer sparkClusterId;
     private  List<ContextType> contextTypes;
 
 }
