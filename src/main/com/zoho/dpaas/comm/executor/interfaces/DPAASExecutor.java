@@ -4,9 +4,8 @@ package com.zoho.dpaas.comm.executor.interfaces;
 import com.zoho.dpaas.comm.executor.conf.DPAASExecutorConf;
 import com.zoho.dpaas.comm.executor.exception.DPAASExecutorException;
 
-import javax.print.attribute.standard.JobState;
-
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.ExecutorType;
+import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
 
 public interface DPAASExecutor {
     /**

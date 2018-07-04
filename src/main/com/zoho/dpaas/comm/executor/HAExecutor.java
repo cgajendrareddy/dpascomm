@@ -4,11 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zoho.dpaas.comm.executor.conf.HAExecutorConf;
 import com.zoho.dpaas.comm.executor.exception.DPAASExecutorException;
 import com.zoho.dpaas.comm.executor.exception.HAExecutorException;
+import com.zoho.dpaas.comm.executor.factory.ExecutorFactory;
 import com.zoho.dpaas.comm.executor.interfaces.AbstractDPAASExecutor;
 import com.zoho.dpaas.comm.executor.interfaces.DPAASExecutor;
+import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
 import org.json.JSONObject;
 
-import javax.print.attribute.standard.JobState;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,10 @@ public class HAExecutor extends AbstractDPAASExecutor{
         this.executorsList = getExecutors((HAExecutorConf)getConf());
     }
 
+    public static void main(String[] args) throws DPAASExecutorException {
+        DPAASExecutor executor = new HAExecutor(new JSONObject("{\"id\":1,\"name\":\"SPARKCLUSTER_HA1\",\"disabled\":true,\"type\":\"SPARKLOCAL\",\"jobs\":[\"sampletransformation\",\"datasettransformation\",\"sampleextract\",\"dsauditstatefile\",\"rawdsaudittransformation\",\"samplepreview\",\"erroraudit\"],\"ids\":[2,3]}"));
+        System.out.println("h");
+    }
     @Override
     public String submit(String... appArgs) throws DPAASExecutorException {
         try {
@@ -88,10 +93,16 @@ public class HAExecutor extends AbstractDPAASExecutor{
      * @param executorConf
      * @return the list of executors configured
      */
-    private static List<DPAASExecutor> getExecutors(HAExecutorConf executorConf)
-    {
-        //TODO return the list
-        return null;
+    private static List<DPAASExecutor> getExecutors(HAExecutorConf executorConf) throws DPAASExecutorException {
+        List<DPAASExecutor> executors = null;
+        List<Integer> ids = executorConf.getIds();
+        for(int i=0;i<ids.size();i++){
+            if(executors == null){
+                executors = new ArrayList<>(4);
+            }
+            executors.add(com.zoho.dpaas.comm.executor.factory.ExecutorFactory.getExecutor(ids.get(i)));
+        }
+        return executors;
     }
 
 

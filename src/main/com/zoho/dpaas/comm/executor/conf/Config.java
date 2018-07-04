@@ -21,4 +21,16 @@ public class Config {
 
     @JsonProperty(value = "spark.executor.memory")
     private String spark_executor_memory;
+
+    @JsonProperty(value = "spark.executor.cores")
+    private Integer spark_executor_cores;
+
+    @JsonProperty(value = "spark.driver.cores")
+    private Integer spark_driver_cores;
+
+    @JsonProperty(value = "spark.driver.memory")
+    private String spark_driver_memory;
+
+    @JsonProperty(value = "spark.driver.supervise")
+    private Boolean spark_driver_supervise;
 }

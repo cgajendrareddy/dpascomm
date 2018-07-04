@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zoho.dpaas.comm.executor.conf.LocalExecutorConf;
 import com.zoho.dpaas.comm.executor.exception.DPAASExecutorException;
 import com.zoho.dpaas.comm.executor.interfaces.AbstractDPAASExecutor;
+import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
 import org.json.JSONObject;
 
-import javax.print.attribute.standard.JobState;
 import java.io.IOException;
 
 public class LocalExecutor extends AbstractDPAASExecutor {

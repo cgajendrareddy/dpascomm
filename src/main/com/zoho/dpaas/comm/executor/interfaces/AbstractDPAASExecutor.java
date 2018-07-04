@@ -2,9 +2,9 @@ package com.zoho.dpaas.comm.executor.interfaces;
 
 import com.zoho.dpaas.comm.executor.conf.DPAASExecutorConf;
 import com.zoho.dpaas.comm.executor.exception.DPAASExecutorException;
+import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
 import lombok.NonNull;
 
-import javax.print.attribute.standard.JobState;
 
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.ExecutorType;
 
@@ -25,7 +25,7 @@ public abstract class AbstractDPAASExecutor implements DPAASExecutor {
 
     @Override
     public boolean isEnabled() {
-        return this.executorConf.getDisabled();
+        return !this.executorConf.getDisabled();
     }
 
     @Override

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 
 @Setter @Getter @JsonIgnoreProperties(ignoreUnknown = true)
 public class SparkClusterExecutorConf extends DPAASExecutorConf {
@@ -17,7 +18,7 @@ public class SparkClusterExecutorConf extends DPAASExecutorConf {
     private String clusterMode;
     private String httpScheme;
     private String appName;
-    private List<Params> params;
-    private List<Params> environmentVariables;
+    private Config params;
+    private Map<String,String> environmentVariables;
     private List<String> jobs;
 }
