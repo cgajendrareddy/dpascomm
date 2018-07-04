@@ -37,17 +37,11 @@ public abstract class AbstractDPAASExecutor implements DPAASExecutor {
     public ExecutorType getType() { return this.executorConf.getType(); }
 
     @Override
-    public String submit(String... appArgs) throws DPAASExecutorException {
-        return null;
-    }
+    public abstract String submit(String... appArgs) throws DPAASExecutorException ;
 
     @Override
-    public boolean killJob(String jobId) throws DPAASExecutorException {
-        return false;
-    }
+    public abstract boolean killJob(String jobId) throws DPAASExecutorException ;
 
     @Override
-    public JobState getJobState(String jobId) throws DPAASExecutorException {
-        return null;
-    }
+    public abstract JobState getJobState(String jobId) throws DPAASExecutorException ;
 }
