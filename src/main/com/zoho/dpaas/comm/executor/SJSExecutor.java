@@ -3,9 +3,7 @@ package com.zoho.dpaas.comm.executor;
 import com.bluebreezecf.tools.sparkjobserver.api.SparkJobServerClientDeleteJobImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zoho.dpaas.comm.executor.conf.SJSExecutorConf;
-import com.zoho.dpaas.comm.executor.conf.SparkClusterExecutorConf;
 import com.zoho.dpaas.comm.executor.exception.DPAASExecutorException;
-import com.zoho.dpaas.comm.executor.factory.ExecutorFactory;
 import com.zoho.dpaas.comm.executor.interfaces.AbstractDPAASExecutor;
 import org.json.JSONObject;
 import org.khaleesi.carfield.tools.sparkjobserver.api.ISparkJobServerClient;
@@ -33,33 +31,46 @@ public class SJSExecutor extends AbstractDPAASExecutor {
 
     @Override
     public String submit(String... appArgs) throws DPAASExecutorException {
-        return null;
+        //TODO context for which job is to be submitted dynamically based on job type,context pool management
+        //TODO SJSClient accepts only one inputJob as String
+        //TODO set appName(context name) , other spark configs in config map in SJSExecutorConf before calling submit
+        SJSExecutor executor =  this;
+        SJSExecutorConf conf = (SJSExecutorConf) executor.getConf();
+        String url = conf.getSjsURL();
+        try{
+            ISparkJobServerClient client = SparkJobServerClientFactory.getInstance().createSparkJobServerClient(url);
+            SparkJobResult result = client.startJob(appArgs.toString(),conf.getConfig());
+            return result.getJobId();
+        } catch (SparkJobServerClientException e) {
+            throw new DPAASExecutorException(executor,"Job Submit Failed. Message : "+e.getMessage(),e);
+        }
+
     }
 
     @Override
     public boolean killJob(String jobId) throws DPAASExecutorException {
-        SparkClusterExecutor executor = (SparkClusterExecutor) ExecutorFactory.getExecutor(this.getId());
-        SparkClusterExecutorConf conf = (SparkClusterExecutorConf) executor.getConf();
-        String url = conf.getHttpScheme()+"://"+conf.getHost()+":"+conf.getPort();
+        SJSExecutor executor =  this;
+        SJSExecutorConf conf = (SJSExecutorConf) executor.getConf();
+        String url = conf.getSjsURL();
         SparkJobServerClientDeleteJobImpl sjsDelete = new SparkJobServerClientDeleteJobImpl(url);
         try {
             return sjsDelete.killJob(jobId);
         } catch (SparkJobServerClientException e) {
-            throw new DPAASExecutorException(executor,"Unable to kill Job. Error Message :"+e.getMessage(),e);
+            throw new DPAASExecutorException(executor,"Unable to kill Job. Message :"+e.getMessage(),e);
         }
     }
 
     @Override
     public JobState getJobState(String jobId) throws DPAASExecutorException {
-        SparkClusterExecutor executor = (SparkClusterExecutor) ExecutorFactory.getExecutor(this.getId());
-        SparkClusterExecutorConf conf = (SparkClusterExecutorConf) executor.getConf();
-        String url = conf.getHttpScheme()+"://"+conf.getHost()+":"+conf.getPort();
+        SJSExecutor executor =  this;
+        SJSExecutorConf conf = (SJSExecutorConf) executor.getConf();
+        String url = conf.getSjsURL();
         try {
             ISparkJobServerClient client = SparkJobServerClientFactory.getInstance().createSparkJobServerClient(url);
             SparkJobResult response = client.getJobResult(jobId);
             return JobState.valueOf(response.getStatus());
         } catch (SparkJobServerClientException e) {
-            throw new DPAASExecutorException(executor,"Error in getting JobStatus. Error Message : "+e.getMessage(),e);
+            throw new DPAASExecutorException(executor,"Error in getting JobStatus. Message : "+e.getMessage(),e);
         }
     }
 }
