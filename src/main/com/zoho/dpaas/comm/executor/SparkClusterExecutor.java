@@ -6,6 +6,7 @@ import com.zoho.dpaas.comm.executor.exception.DPAASExecutorException;
 import com.zoho.dpaas.comm.executor.interfaces.AbstractDPAASExecutor;
 import org.json.JSONObject;
 
+import javax.print.attribute.standard.JobState;
 import java.io.IOException;
 
 public class SparkClusterExecutor extends AbstractDPAASExecutor {
@@ -21,5 +22,20 @@ public class SparkClusterExecutor extends AbstractDPAASExecutor {
         } catch (IOException e){
             throw new DPAASExecutorException(null,"Unable to initialize SparkClusterExecutor Conf",e);
         }
+    }
+
+    @Override
+    public String submit(String... appArgs) throws DPAASExecutorException {
+        return null;
+    }
+
+    @Override
+    public boolean killJob(String jobId) throws DPAASExecutorException {
+        return false;
+    }
+
+    @Override
+    public JobState getJobState(String jobId) throws DPAASExecutorException {
+        return null;
     }
 }
