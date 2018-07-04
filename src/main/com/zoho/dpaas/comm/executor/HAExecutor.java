@@ -13,10 +13,24 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * High Availability Executor
+ */
 public class HAExecutor extends AbstractDPAASExecutor{
 
+    /**
+     * List of Executors
+     */
     final List<DPAASExecutor> executorsList;
-    DPAASExecutor currentExecutor;
+    /**
+     * current active Executor
+     */
+    DPAASExecutor currentActiveExecutor;
+
+    /**
+     * @param executorConf
+     * @throws DPAASExecutorException
+     */
     public HAExecutor(JSONObject executorConf) throws DPAASExecutorException {
         super(getExecutorConf(executorConf));
         this.executorsList = getExecutors((HAExecutorConf)getConf());
@@ -57,6 +71,11 @@ public class HAExecutor extends AbstractDPAASExecutor{
     }
 
 
+    /**
+     * @param executorConf
+     * @return the executor conf for this High availability Executor
+     * @throws DPAASExecutorException
+     */
     private static HAExecutorConf getExecutorConf(JSONObject executorConf) throws DPAASExecutorException {
         try {
             return new ObjectMapper().readValue(executorConf.toString(),HAExecutorConf.class);
@@ -65,6 +84,10 @@ public class HAExecutor extends AbstractDPAASExecutor{
         }
     }
 
+    /**
+     * @param executorConf
+     * @return the list of executors configured
+     */
     private static List<DPAASExecutor> getExecutors(HAExecutorConf executorConf)
     {
         //TODO return the list
@@ -72,20 +95,40 @@ public class HAExecutor extends AbstractDPAASExecutor{
     }
 
 
-
+    /**
+     * Executor Factory which takes care of trying the primary and standby executors and throw exception if none of them works out.
+     */
     public class ExecutorFactory
     {
+        /**
+         * High availability executor instance
+         */
         private HAExecutor HAExecutor;
+        /**
+         * active executor
+         */
         private DPAASExecutor activeExecutor;
+        /**
+         *list of executors
+         */
         private List<DPAASExecutor> dpasExecutors;
+
+        /**
+         * @param HAExecutor
+         */
         public ExecutorFactory(HAExecutor HAExecutor)
         {
             this.HAExecutor = HAExecutor;
             this.dpasExecutors = new ArrayList<>(HAExecutor.executorsList);
-            if(HAExecutor.currentExecutor!=null) {
-                setActiveExecutor(HAExecutor.currentExecutor);
+            if(HAExecutor.currentActiveExecutor !=null) {
+                setActiveExecutor(HAExecutor.currentActiveExecutor);
             }
         }
+
+        /**
+         * check whether the executor is part of the executor list and set it as current executor
+         * @param executor
+         */
         private void setActiveExecutor(DPAASExecutor executor)
         {
             if(dpasExecutors !=null && dpasExecutors.contains(executor)) {
@@ -93,6 +136,11 @@ public class HAExecutor extends AbstractDPAASExecutor{
                 dpasExecutors.remove(activeExecutor);
             }
         }
+
+        /**
+         * @return the active executor or throws exception if none of them fails.
+         * @throws HAExecutorException
+         */
         private DPAASExecutor getActiveExecutor() throws HAExecutorException {
             if(activeExecutor!=null)
             {
@@ -102,6 +150,10 @@ public class HAExecutor extends AbstractDPAASExecutor{
             return activeExecutor;
         }
 
+        /**
+         * set the next executor in the executorlist as active executor.
+         * @throws HAExecutorException
+         */
         private void setNextExecutorAsTheActiveExecutor() throws HAExecutorException {
             if(dpasExecutors.size()==0)
             {
@@ -109,11 +161,20 @@ public class HAExecutor extends AbstractDPAASExecutor{
             }
             setActiveExecutor(dpasExecutors.get(0));
         }
+
+        /**
+         * execution failed.
+         */
         private void executionFailed()
         {
             activeExecutor=null;
         }
 
+        /**
+         * @param appArgs
+         * @return the jobid of the submission.
+         * @throws HAExecutorException
+         */
         public String submit(String... appArgs) throws HAExecutorException {
             boolean isSuccessfull=false;
             while (getActiveExecutor() != null) {
@@ -128,7 +189,7 @@ public class HAExecutor extends AbstractDPAASExecutor{
                 finally
                 {
                     if(isSuccessfull) {
-                        HAExecutor.currentExecutor = getActiveExecutor();
+                        HAExecutor.currentActiveExecutor = getActiveExecutor();
                     }
                 }
 
@@ -136,6 +197,11 @@ public class HAExecutor extends AbstractDPAASExecutor{
             throw new HAExecutorException(HAExecutor,"Error occured");
         }
 
+        /**
+         * @param jobId
+         * @return  true if job is killed
+         * @throws HAExecutorException
+         */
         public boolean killJob(String jobId) throws HAExecutorException {
             boolean isSuccessfull=false;
             while (getActiveExecutor() != null) {
@@ -150,7 +216,7 @@ public class HAExecutor extends AbstractDPAASExecutor{
                 finally
                 {
                     if(isSuccessfull) {
-                        HAExecutor.currentExecutor = getActiveExecutor();
+                        HAExecutor.currentActiveExecutor = getActiveExecutor();
                     }
                 }
 
@@ -158,6 +224,11 @@ public class HAExecutor extends AbstractDPAASExecutor{
             throw new HAExecutorException(HAExecutor,"Error occured");
         }
 
+        /**
+         * @param jobId
+         * @return the job state.
+         * @throws HAExecutorException
+         */
         public JobState getJobState(String jobId) throws HAExecutorException {
             boolean isSuccessfull=false;
             while (getActiveExecutor() != null) {
@@ -172,7 +243,7 @@ public class HAExecutor extends AbstractDPAASExecutor{
                 finally
                 {
                     if(isSuccessfull) {
-                        HAExecutor.currentExecutor = getActiveExecutor();
+                        HAExecutor.currentActiveExecutor = getActiveExecutor();
                     }
                 }
 
