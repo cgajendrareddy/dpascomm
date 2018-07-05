@@ -11,7 +11,6 @@ import java.util.Map;
 
 @Setter @Getter @JsonIgnoreProperties(ignoreUnknown = true)@ToString
 public class SJSConfig extends ExecutorConfig {
-    private List<String> jobs;
     private String sjsURL;
     private Integer sparkClusterId;
     private List<ContextType> contextTypes;

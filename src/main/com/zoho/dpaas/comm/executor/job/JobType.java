@@ -9,4 +9,6 @@ public class JobType {
     private String jobType;
     private int minPool;
     private int maxPool;
+    private int cores;
+    private String memory;
 }

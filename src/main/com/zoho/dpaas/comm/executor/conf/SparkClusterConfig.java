@@ -13,9 +13,7 @@ import java.util.Map;
 public class SparkClusterConfig extends ExecutorConfig {
     public static List<String> params = Arrays.asList("spark.executor.instances","num-cpu-cores","num-cpu-cores","spark.executor.memory","spark.executor.cores","spark.driver.cores","spark.driver.memory","spark.driver.supervise");
 
-    private String host;
-    private Integer port;
-    private Integer webUIPort;
+    private List<Master> masters;
     private String sparkVersion;
     private String mainClass;
     private String appResource;
@@ -24,5 +22,40 @@ public class SparkClusterConfig extends ExecutorConfig {
     private String appName;
     private Map<String,String> config;
     private Map<String,String> environmentVariables;
-    private List<String> jobs;
+
+    /**
+     * Get Host from Master
+     * @return
+     */
+    public String getHost(){
+        if(masters != null && masters.size()>0){
+            return masters.get(0).getHost();
+        } else {
+            throw new IllegalArgumentException("No Masters Found in specified SparkCluster Config Id : "+this.getId());
+        }
+    }
+
+    /**
+     * Get Port From Master
+     * @return
+     */
+    public int getPort(){
+        if(masters != null && masters.size()>0){
+            return masters.get(0).getPort();
+        } else {
+            throw new IllegalArgumentException("No Masters Found in specified SparkCluster Config Id : "+this.getId());
+        }
+    }
+
+    /**
+     * Get WebUIPort from Master
+     * @return
+     */
+    public int getWebUIPort(){
+        if(masters != null && masters.size()>0){
+            return masters.get(0).getWebUIPort();
+        } else {
+            throw new IllegalArgumentException("No Masters Found in specified SparkCluster Config Id : "+this.getId());
+        }
+    }
 }
