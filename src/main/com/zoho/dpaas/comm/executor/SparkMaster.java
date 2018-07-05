@@ -1,9 +1,7 @@
 package com.zoho.dpaas.comm.executor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.ywilkof.sparkrestclient.FailedSparkRequestException;
-import com.github.ywilkof.sparkrestclient.JobSubmitRequestSpecificationImpl;
-import com.github.ywilkof.sparkrestclient.SparkRestClient;
+import com.github.ywilkof.sparkrestclient.*;
 import com.github.ywilkof.sparkrestclient.interfaces.JobStatusRequestSpecification;
 import com.github.ywilkof.sparkrestclient.interfaces.KillJobRequestSpecification;
 import com.github.ywilkof.sparkrestclient.interfaces.SparkPropertiesSpecification;
@@ -23,6 +21,7 @@ import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
 
 public class SparkMaster extends AbstractExecutor {
 
+    SparkRestClient client;
 
     /**
      * @param sparkMasterConfig
@@ -30,6 +29,8 @@ public class SparkMaster extends AbstractExecutor {
      */
     public SparkMaster(JSONObject sparkMasterConfig) throws ExecutorConfigException {
         super(getSparkExecutorConf(sparkMasterConfig));
+        SparkClusterConfig conf = (SparkClusterConfig) getConf();
+        client = SparkRestClient.builder().sparkVersion(conf.getSparkVersion()).httpScheme(conf.getHttpScheme()).masterHost(conf.getHost()).masterPort(conf.getPort()).environmentVariables(conf.getEnvironmentVariables()).build();
     }
 
     /**
@@ -41,20 +42,22 @@ public class SparkMaster extends AbstractExecutor {
         try {
             return new ObjectMapper().readValue(sparkMasterConfig.toString(),SparkClusterConfig.class);
         } catch (IOException e){
-            throw new ExecutorConfigException("Unable to initialize SparkMaster Conf",e);
+            throw new ExecutorConfigException("Unable to initialize SparkCluster Conf",e);
         }
     }
 
     @Override
     public boolean isResourcesAvailableFortheJob(String jobType) throws ExecutorException {
-        return false;
+        SparkClusterDetailsResponse clusterDetails=getSparkClusterDetails();
+        int avaialbleCores=clusterDetails.getCores()-clusterDetails.getCoresused();
+
+        int requiredCores=getConf().getJobTypes().get(jobType).getCores();
+        return requiredCores<avaialbleCores;
     }
 
     @Override
     public String submit(String... appArgs) throws ExecutorException {
-        //TODO Dynamic handling of cores and memory allocation for context
         SparkClusterConfig conf = (SparkClusterConfig) getConf();
-        SparkRestClient client = SparkRestClient.builder().sparkVersion(conf.getSparkVersion()).httpScheme(conf.getHttpScheme()).masterHost(conf.getHost()).masterPort(conf.getPort()).environmentVariables(conf.getEnvironmentVariables()).build();
         JobSubmitRequestSpecificationImpl jobSubmit = new JobSubmitRequestSpecificationImpl(client);
         jobSubmit.appName(conf.getAppName());
         jobSubmit.appResource(conf.getAppResource());
@@ -79,7 +82,6 @@ public class SparkMaster extends AbstractExecutor {
     public boolean killJob(String jobId) throws ExecutorException {
         //TODO check for multiple master url's and do the same
         SparkClusterConfig conf = (SparkClusterConfig) getConf();
-        SparkRestClient client = SparkRestClient.builder().sparkVersion(conf.getSparkVersion()).httpScheme(conf.getHttpScheme()).masterHost(conf.getHost()).masterPort(conf.getPort()).build();
         KillJobRequestSpecification killJobRequestSpecification = client.killJob();
         try {
             return killJobRequestSpecification.withSubmissionId(jobId);
@@ -91,7 +93,6 @@ public class SparkMaster extends AbstractExecutor {
     @Override
     public JobState getJobState(String jobId) throws ExecutorException {
         SparkClusterConfig conf = (SparkClusterConfig) getConf();
-        SparkRestClient client = SparkRestClient.builder().sparkVersion(conf.getSparkVersion()).httpScheme(conf.getHttpScheme()).masterHost(conf.getHost()).masterPort(conf.getPort()).build();
         JobStatusRequestSpecification jobStatusRequestSpecification = client.checkJobStatus();
         try{
             return JobState.valueOf(jobStatusRequestSpecification.withSubmissionId(jobId).name());
@@ -100,4 +101,18 @@ public class SparkMaster extends AbstractExecutor {
         }
     }
 
+    private SparkClusterDetailsResponse getSparkClusterDetails() throws ExecutorException {
+        try {
+            return new SparkClusterDetailsSpecificationImpl(client).getSparkClusterDetails();
+        }
+        catch(Exception e)
+        {
+            throw new ExecutorException(this,e);
+        }
+    }
+
+    public static void main(String[] args) throws ExecutorConfigException {
+        Executor executor = new SparkCluster(new JSONObject("{\"id\":2,\"name\":\"Cluster1\",\"disabled\":false,\"type\":\"SPARK_CLUSTER\",\"jobs\":[\"datasettransformation\",\"sampleextract\",\"dsauditstatefile\",\"rawdsaudittransformation\",\"erroraudit\"],\"host\":\"192.168.230.186\",\"port\":\"6066\",\"webUIPort\":\"8090\",\"sparkVersion\":\"2.2.1\",\"mainClass\":\"com.zoho.dpaas.processor.ZDExecutor\",\"appResource\":\"\",\"clusterMode\":\"spark\",\"httpScheme\":\"http\",\"appName\":\"SparkStandAlone\",\"config\":{\"spark.driver.supervise\":\"true\",\"spark.driver.memory\":\"2g\",\"spark.driver.cores\":2,\"spark.executor.cores\":2,\"spark.executor.memory\":\"2g\",\"spark.executor.instances\":2},\"environmentVariables\":{\"SPARK_ENV_LOADED\":\"1\"}}"));
+        System.out.println("c");
+    }
 }
