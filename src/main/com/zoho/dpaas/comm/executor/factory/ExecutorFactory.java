@@ -5,6 +5,7 @@ import com.zoho.dpaas.comm.executor.LocalSpark;
 import com.zoho.dpaas.comm.executor.SparkJobServer;
 import com.zoho.dpaas.comm.executor.SparkCluster;
 import com.zoho.dpaas.comm.executor.exception.ExecutorConfigException;
+import com.zoho.dpaas.comm.executor.exception.ExecutorException;
 import com.zoho.dpaas.comm.executor.interfaces.Executor;
 import com.zoho.dpaas.comm.executor.interfaces.ExecutorConfigProvider;
 import org.json.JSONObject;
@@ -35,9 +36,8 @@ public class ExecutorFactory {
             return null;
     }
 
-    public static Executor getExecutor(String jobType)
-    {
-        return null;
+    public static Executor getExecutor(String jobType) throws ExecutorException {
+        return executorsList.getExecutor(jobType);
     }
 
     private static void initializeExecutors()
