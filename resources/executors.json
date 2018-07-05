@@ -42,8 +42,7 @@
         "maxPool": 3
       }
     },
-    "async": true,
-    "mainClass": "com.zoho.callback.LocalCallBackHandler"
+    "className": "com.zoho.dpaas.comm.executor.LocalSpark"
   },
   {
     "id": 2,

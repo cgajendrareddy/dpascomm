@@ -10,6 +10,4 @@ import java.util.List;
 @Setter @Getter @JsonIgnoreProperties(ignoreUnknown = true)@ToString
 public class LocalSparkConfig extends ExecutorConfig {
     private List<String> jobs;
-    private Boolean async;
-    private String mainClass;
 }

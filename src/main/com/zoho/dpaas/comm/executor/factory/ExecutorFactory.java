@@ -1,22 +1,21 @@
 package com.zoho.dpaas.comm.executor.factory;
 
 import com.zoho.dpaas.comm.executor.ExecutorsList;
-import com.zoho.dpaas.comm.executor.LocalSpark;
-import com.zoho.dpaas.comm.executor.SparkJobServer;
 import com.zoho.dpaas.comm.executor.SparkCluster;
+import com.zoho.dpaas.comm.executor.SparkJobServer;
 import com.zoho.dpaas.comm.executor.exception.ExecutorConfigException;
 import com.zoho.dpaas.comm.executor.exception.ExecutorException;
 import com.zoho.dpaas.comm.executor.interfaces.Executor;
 import com.zoho.dpaas.comm.executor.interfaces.ExecutorConfigProvider;
 import org.json.JSONObject;
 
-import java.util.Map;
-
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.ExecutorType;
 
 public class ExecutorFactory {
     public static final String EXECUTOR_CONFIG_PROVIDER_SYSPROP_KEY="dpaas.comm.executor.config.provider";
     public static final String EXECUTOR_TYPE="type";
+    public static final String EXECUTOR_CLASS_NAME = "className";
+    public static final String EXECUTOR_CONFIG_CLASS_NAME = "configClassName";
     private static ExecutorConfigProvider executorConfigProvider;
     private static ExecutorsList executorsList;
 
@@ -26,12 +25,19 @@ public class ExecutorFactory {
         ExecutorType executorType=ExecutorType.valueOf(executorConfig.getString(EXECUTOR_TYPE));
         switch (executorType)
         {
-            case LOCAL_SPARK:
-                return new LocalSpark(executorConfig);
             case SPARK_CLUSTER:
                 return new SparkCluster(executorConfig);
             case SPARK_SJS:
                 return new SparkJobServer(executorConfig);
+            default:
+                try {
+                    String className = executorConfig.getString(EXECUTOR_CLASS_NAME);
+                    Class mainClass = Class.forName(className);
+                    Executor executor = (Executor)mainClass.getDeclaredConstructor(JSONObject.class).newInstance(executorConfig);
+                    return executor;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
         }
             return null;
     }
