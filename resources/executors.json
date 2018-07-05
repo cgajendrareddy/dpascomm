@@ -130,7 +130,7 @@
         "sjsURL": "http://192.168.230.186:9090"
       }
     ],
-    "jobs": {
+    "jobTypes": {
       "sampletransformation":{
         "jobType" :"sampletransformation",
         "minPool" : 2,

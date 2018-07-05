@@ -1,15 +1,14 @@
 package com.zoho.dpaas.comm.executor.conf;
 
-import static com.zoho.dpaas.comm.util.DPAASCommUtil.ExecutorType;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.zoho.dpaas.comm.executor.job.JobType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.List;
 import java.util.Map;
+
+import static com.zoho.dpaas.comm.util.DPAASCommUtil.ExecutorType;
 
 @Getter @Setter @JsonIgnoreProperties(ignoreUnknown = true)@ToString
 public class ExecutorConfig {
