@@ -9,15 +9,27 @@ import java.util.List;
 public class SparkCluster extends HAExecutor {
 
 
-    public SparkCluster(JSONObject executorConf) throws ExecutorConfigException {
-        this(getSparkExecutorList(executorConf));
+    /**
+     * @param sparkClusterConfig
+     * @throws ExecutorConfigException
+     */
+    public SparkCluster(JSONObject sparkClusterConfig) throws ExecutorConfigException {
+        this(getSparkMasters(sparkClusterConfig));
     }
 
-    private static List<Executor> getSparkExecutorList(JSONObject executorConf) {
+    /**
+     * @param sparkClusterConfig
+     * @return the list of spark masters
+     */
+    private static List<Executor> getSparkMasters(JSONObject sparkClusterConfig) {
         return null;
     }
 
-    private SparkCluster(List<Executor> sparkClusterExecutors) throws ExecutorConfigException {
-        super( sparkClusterExecutors);
+    /**
+     * @param sparkMasters
+     * @throws ExecutorConfigException
+     */
+    private SparkCluster(List<Executor> sparkMasters) throws ExecutorConfigException {
+        super( sparkMasters);
     }
 }

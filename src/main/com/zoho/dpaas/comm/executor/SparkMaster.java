@@ -24,14 +24,22 @@ import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
 public class SparkMaster extends AbstractDPAASExecutor {
 
 
-
-    public SparkMaster(JSONObject executorConf) throws ExecutorConfigException {
-        super(getSparkExecutorConf(executorConf));
+    /**
+     * @param sparkMasterConfig
+     * @throws ExecutorConfigException
+     */
+    public SparkMaster(JSONObject sparkMasterConfig) throws ExecutorConfigException {
+        super(getSparkExecutorConf(sparkMasterConfig));
     }
 
-    static SparkClusterConfig getSparkExecutorConf(JSONObject executorConf) throws ExecutorConfigException {
+    /**
+     * @param sparkMasterConfig
+     * @return
+     * @throws ExecutorConfigException
+     */
+    static SparkClusterConfig getSparkExecutorConf(JSONObject sparkMasterConfig) throws ExecutorConfigException {
         try {
-            return new ObjectMapper().readValue(executorConf.toString(),SparkClusterConfig.class);
+            return new ObjectMapper().readValue(sparkMasterConfig.toString(),SparkClusterConfig.class);
         } catch (IOException e){
             throw new ExecutorConfigException("Unable to initialize SparkCluster Conf",e);
         }
