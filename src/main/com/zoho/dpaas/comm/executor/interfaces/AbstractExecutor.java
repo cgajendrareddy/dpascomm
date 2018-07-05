@@ -9,6 +9,7 @@ import lombok.NonNull;
 
 
 import java.util.List;
+import java.util.Map;
 
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.ExecutorType;
 
@@ -46,7 +47,7 @@ public abstract class AbstractExecutor implements Executor {
     }
 
     @Override
-    public List<JobType> getJobTypes() {
+    public Map<String,JobType> getJobTypes() {
         return executorConf.getJobTypes();
     }
 

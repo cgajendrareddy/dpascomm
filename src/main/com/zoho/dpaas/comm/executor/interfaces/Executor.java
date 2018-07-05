@@ -6,7 +6,7 @@ import com.zoho.dpaas.comm.executor.exception.ExecutorException;
 import com.zoho.dpaas.comm.executor.exception.HAExecutorException;
 import com.zoho.dpaas.comm.executor.job.JobType;
 
-import java.util.List;
+import java.util.Map;
 
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.ExecutorType;
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
@@ -40,7 +40,7 @@ public interface Executor {
      * @return
      * @throws ExecutorException
      */
-    public List<JobType> getJobTypes();
+    public Map<String,JobType> getJobTypes();
     /**
      * Get ExecutorType of Executor
      * @return

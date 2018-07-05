@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter @Setter @JsonIgnoreProperties(ignoreUnknown = true)@ToString
 public class ExecutorConfig {
@@ -17,5 +18,5 @@ public class ExecutorConfig {
     private Boolean disabled;
     private ExecutorType type;
     private int priority;
-    private List<JobType> jobTypes;
+    private Map<String,JobType> jobTypes;
 }
