@@ -41,7 +41,7 @@ public class ExecutorsList {
     }) ;
        for(Executor executor:executors.values())
        {
-           if(executor.getJobTypes().contains(jobType))
+           if(executor.getJobTypes().get(jobType)!=null)
            {
                 toReturn.add(executor);
 

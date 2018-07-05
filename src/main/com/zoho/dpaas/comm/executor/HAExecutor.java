@@ -57,6 +57,9 @@ public class HAExecutor extends AbstractExecutor {
     @Override
     public boolean isResourcesAvailableFortheJob(String jobType) throws ExecutorException {
         try {
+            if(currentActiveExecutor == null){
+                throw new ExecutorException(this,"Invalid Executor");
+            }
             return currentActiveExecutor.isResourcesAvailableFortheJob(jobType);
         }
         catch (ExecutorException e)
@@ -75,6 +78,9 @@ public class HAExecutor extends AbstractExecutor {
     @Override
     public String submit(String... appArgs) throws ExecutorException {
         try {
+            if(currentActiveExecutor == null){
+                throw new ExecutorException(this,"Invalid Executor");
+            }
             return currentActiveExecutor.submit(appArgs);
         }
         catch (ExecutorException e)
@@ -95,6 +101,9 @@ public class HAExecutor extends AbstractExecutor {
     public boolean killJob(String jobId) throws ExecutorException {
 
         try {
+            if(currentActiveExecutor == null){
+                throw new ExecutorException(this,"Invalid Executor");
+            }
             return currentActiveExecutor.killJob(jobId);
         }
         catch (ExecutorException e)
@@ -114,6 +123,9 @@ public class HAExecutor extends AbstractExecutor {
     @Override
     public JobState getJobState(String jobId) throws ExecutorException {
         try {
+            if(currentActiveExecutor == null){
+                throw new ExecutorException(this,"Invalid Executor");
+            }
             return currentActiveExecutor.getJobState(jobId);
         }
         catch (ExecutorException e)
@@ -131,7 +143,8 @@ public class HAExecutor extends AbstractExecutor {
 
     @Override
     public boolean isRunning() {
-        if(currentActiveExecutor.isRunning())
+
+        if(currentActiveExecutor!=null && currentActiveExecutor.isRunning())
         {
             return true;
         }
@@ -174,14 +187,19 @@ public class HAExecutor extends AbstractExecutor {
         return executors;
     }
     private void findCurrentActiveExecutor() throws HAExecutorException {
+        boolean isSuccess = false;
         for(Executor executor:executorsList)
         {
             if(executor.isRunning())
             {
                 currentActiveExecutor=executor;
+                isSuccess = true;
+                break;
             }
         }
-        throw new HAExecutorException(this,"Failed with all the Executors.");
+        if(!isSuccess){
+            throw new HAExecutorException(this,"Failed with all the Executors.");
+        }
     }
 
 

@@ -185,7 +185,7 @@
     "id": 5,
     "name": "SJS_HA1",
     "disabled": true,
-    "type": "SPARKLOCAL",
+    "type": "SPARK_SJS",
     "jobs": [
       "sampletransformation",
       "datasettransformation",

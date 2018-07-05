@@ -50,8 +50,11 @@ public class SparkMaster extends AbstractExecutor {
     public boolean isResourcesAvailableFortheJob(String jobType) throws ExecutorException {
         SparkClusterDetailsResponse clusterDetails=getSparkClusterDetails();
         int avaialbleCores=clusterDetails.getCores()-clusterDetails.getCoresused();
+        if(getConf().getJobTypes().get(jobType) == null){
+            throw new ExecutorException(this,"Job Type "+jobType+" not found in the executors supported JobTypes");
+        }
+        int requiredCores = getConf().getJobTypes().get(jobType).getCores();
 
-        int requiredCores=getConf().getJobTypes().get(jobType).getCores();
         return requiredCores<avaialbleCores;
     }
 
@@ -81,7 +84,6 @@ public class SparkMaster extends AbstractExecutor {
     @Override
     public boolean killJob(String jobId) throws ExecutorException {
         //TODO check for multiple master url's and do the same
-        SparkClusterConfig conf = (SparkClusterConfig) getConf();
         KillJobRequestSpecification killJobRequestSpecification = client.killJob();
         try {
             return killJobRequestSpecification.withSubmissionId(jobId);
@@ -92,7 +94,6 @@ public class SparkMaster extends AbstractExecutor {
 
     @Override
     public JobState getJobState(String jobId) throws ExecutorException {
-        SparkClusterConfig conf = (SparkClusterConfig) getConf();
         JobStatusRequestSpecification jobStatusRequestSpecification = client.checkJobStatus();
         try{
             return JobState.valueOf(jobStatusRequestSpecification.withSubmissionId(jobId).name());
@@ -114,7 +115,8 @@ public class SparkMaster extends AbstractExecutor {
 
     private SparkClusterDetailsResponse getSparkClusterDetails() throws ExecutorException {
         try {
-            return new SparkClusterDetailsSpecificationImpl(client).getSparkClusterDetails();
+            SparkRestClient confClient = SparkRestClient.builder().sparkVersion(client.getSparkVersion()).masterPort(((SparkClusterConfig)getConf()).getWebUIPort()).masterHost(client.getMasterHost()).build();
+            return new SparkClusterDetailsSpecificationImpl(confClient).getSparkClusterDetails();
         }
         catch(Exception e)
         {
