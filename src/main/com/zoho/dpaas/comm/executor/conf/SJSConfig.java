@@ -6,14 +6,12 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Setter @Getter @JsonIgnoreProperties(ignoreUnknown = true)@ToString
 public class SJSConfig extends ExecutorConfig {
     private String sjsURL;
     private Integer sparkClusterId;
-    private List<ContextType> contextTypes;
     private Map<String,String> config;
 
     private void addConfig(String configName,String configValue){
