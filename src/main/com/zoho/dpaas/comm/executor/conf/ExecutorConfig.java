@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter @JsonIgnoreProperties(ignoreUnknown = true)
-public class DPAASExecutorConf {
+public class ExecutorConfig {
     private Integer id;
     private String name;
     private Boolean disabled;

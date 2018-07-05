@@ -1,13 +1,15 @@
 package com.zoho.dpaas.comm.executor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zoho.dpaas.comm.executor.conf.HAExecutorConf;
-import com.zoho.dpaas.comm.executor.exception.DPAASExecutorException;
+import com.zoho.dpaas.comm.executor.conf.HAExecutorConfig;
+import com.zoho.dpaas.comm.executor.exception.ExecutorConfigException;
+import com.zoho.dpaas.comm.executor.exception.ExecutorException;
 import com.zoho.dpaas.comm.executor.exception.HAExecutorException;
 import com.zoho.dpaas.comm.executor.factory.ExecutorFactory;
 import com.zoho.dpaas.comm.executor.interfaces.AbstractDPAASExecutor;
-import com.zoho.dpaas.comm.executor.interfaces.DPAASExecutor;
+import com.zoho.dpaas.comm.executor.interfaces.Executor;
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
+
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -22,56 +24,56 @@ public class HAExecutor extends AbstractDPAASExecutor{
     /**
      * List of Executors
      */
-    final List<DPAASExecutor> executorsList;
+    final List<Executor> executorsList;
     /**
      * current active Executor
      */
-    DPAASExecutor currentActiveExecutor;
+    Executor currentActiveExecutor;
 
     /**
      * @param executorConf
-     * @throws DPAASExecutorException
+     * @throws ExecutorException
      */
-    public HAExecutor(JSONObject executorConf) throws DPAASExecutorException {
+    public HAExecutor(JSONObject executorConf) throws ExecutorException, ExecutorConfigException {
         super(getExecutorConf(executorConf));
-        this.executorsList = getExecutors((HAExecutorConf)getConf());
+        this.executorsList = getExecutors((HAExecutorConfig)getConf());
     }
 
-    public static void main(String[] args) throws DPAASExecutorException {
-        DPAASExecutor executor = new HAExecutor(new JSONObject("{\"id\":1,\"name\":\"SPARKCLUSTER_HA1\",\"disabled\":true,\"type\":\"SPARKLOCAL\",\"jobs\":[\"sampletransformation\",\"datasettransformation\",\"sampleextract\",\"dsauditstatefile\",\"rawdsaudittransformation\",\"samplepreview\",\"erroraudit\"],\"ids\":[2,3]}"));
+    public static void main(String[] args) throws ExecutorException, ExecutorConfigException {
+        Executor executor = new HAExecutor(new JSONObject("{\"id\":1,\"name\":\"SPARKCLUSTER_HA1\",\"disabled\":true,\"type\":\"LOCAL_SPARK\",\"jobs\":[\"sampletransformation\",\"datasettransformation\",\"sampleextract\",\"dsauditstatefile\",\"rawdsaudittransformation\",\"samplepreview\",\"erroraudit\"],\"ids\":[2,3]}"));
         System.out.println("h");
     }
     @Override
-    public String submit(String... appArgs) throws DPAASExecutorException {
+    public String submit(String... appArgs) throws ExecutorException {
         try {
-            return new ExecutorFactory(this).submit(appArgs);
+            return new ExecutorProxy(this).submit(appArgs);
         }
         catch (HAExecutorException e)
         {
-            throw new DPAASExecutorException(this,e);
+            throw new ExecutorException(this,e);
         }
 
     }
 
     @Override
-    public boolean killJob(String jobId) throws DPAASExecutorException {
+    public boolean killJob(String jobId) throws ExecutorException {
         try {
-            return new ExecutorFactory(this).killJob(jobId);
+            return new ExecutorProxy(this).killJob(jobId);
         }
         catch (HAExecutorException e)
         {
-            throw new DPAASExecutorException(this,e);
+            throw new ExecutorException(this,e);
         }
     }
 
     @Override
-    public JobState getJobState(String jobId) throws DPAASExecutorException {
+    public JobState getJobState(String jobId) throws ExecutorException {
         try {
-            return new ExecutorFactory(this).getJobState(jobId);
+            return new ExecutorProxy(this).getJobState(jobId);
         }
         catch (HAExecutorException e)
         {
-            throw new DPAASExecutorException(this,e);
+            throw new ExecutorException(this,e);
         }
     }
 
@@ -79,13 +81,13 @@ public class HAExecutor extends AbstractDPAASExecutor{
     /**
      * @param executorConf
      * @return the executor conf for this High availability Executor
-     * @throws DPAASExecutorException
+     * @throws ExecutorException
      */
-    private static HAExecutorConf getExecutorConf(JSONObject executorConf) throws DPAASExecutorException {
+    private static HAExecutorConfig getExecutorConf(JSONObject executorConf) throws ExecutorException {
         try {
-            return new ObjectMapper().readValue(executorConf.toString(),HAExecutorConf.class);
+            return new ObjectMapper().readValue(executorConf.toString(),HAExecutorConfig.class);
         } catch (IOException e){
-            throw new DPAASExecutorException(null,"Unable to initialize SparkClusterExecutor Conf",e);
+            throw new ExecutorException(null,"Unable to initialize SparkClusterExecutor Conf",e);
         }
     }
 
@@ -93,23 +95,23 @@ public class HAExecutor extends AbstractDPAASExecutor{
      * @param executorConf
      * @return the list of executors configured
      */
-    private static List<DPAASExecutor> getExecutors(HAExecutorConf executorConf) throws DPAASExecutorException {
-        List<DPAASExecutor> executors = null;
+    private static List<Executor> getExecutors(HAExecutorConfig executorConf) throws ExecutorException, ExecutorConfigException {
+        List<Executor> executors = null;
         List<Integer> ids = executorConf.getIds();
         for(int i=0;i<ids.size();i++){
             if(executors == null){
                 executors = new ArrayList<>(4);
             }
-            executors.add(com.zoho.dpaas.comm.executor.factory.ExecutorFactory.getExecutor(ids.get(i)));
+            executors.add(ExecutorFactory.getExecutor(ids.get(i)));
         }
         return executors;
     }
 
 
     /**
-     * Executor Factory which takes care of trying the primary and standby executors and throw exception if none of them works out.
+     * Executor Proxy which takes care of trying the primary and standby executors and throw exception if none of them works out.
      */
-    public class ExecutorFactory
+    public class ExecutorProxy
     {
         /**
          * High availability executor instance
@@ -118,16 +120,16 @@ public class HAExecutor extends AbstractDPAASExecutor{
         /**
          * active executor
          */
-        private DPAASExecutor activeExecutor;
+        private Executor activeExecutor;
         /**
          *list of executors
          */
-        private List<DPAASExecutor> dpasExecutors;
+        private List<Executor> dpasExecutors;
 
         /**
          * @param HAExecutor
          */
-        public ExecutorFactory(HAExecutor HAExecutor)
+        public ExecutorProxy(HAExecutor HAExecutor)
         {
             this.HAExecutor = HAExecutor;
             this.dpasExecutors = new ArrayList<>(HAExecutor.executorsList);
@@ -140,7 +142,7 @@ public class HAExecutor extends AbstractDPAASExecutor{
          * check whether the executor is part of the executor list and set it as current executor
          * @param executor
          */
-        private void setActiveExecutor(DPAASExecutor executor)
+        private void setActiveExecutor(Executor executor)
         {
             if(dpasExecutors !=null && dpasExecutors.contains(executor)) {
                 this.activeExecutor=executor;
@@ -152,7 +154,7 @@ public class HAExecutor extends AbstractDPAASExecutor{
          * @return the active executor or throws exception if none of them fails.
          * @throws HAExecutorException
          */
-        private DPAASExecutor getActiveExecutor() throws HAExecutorException {
+        private Executor getActiveExecutor() throws HAExecutorException {
             if(activeExecutor!=null)
             {
                 return activeExecutor;
@@ -193,7 +195,7 @@ public class HAExecutor extends AbstractDPAASExecutor{
                     String toReturn=getActiveExecutor().submit(appArgs);
                     isSuccessfull=true;
                     return toReturn;
-                } catch (DPAASExecutorException ex) {
+                } catch (ExecutorException ex) {
                     isSuccessfull=false;
                     executionFailed();
                 }
@@ -220,7 +222,7 @@ public class HAExecutor extends AbstractDPAASExecutor{
                     boolean toReturn=getActiveExecutor().killJob(jobId);
                     isSuccessfull=true;
                     return toReturn;
-                } catch (DPAASExecutorException ex) {
+                } catch (ExecutorException ex) {
                     isSuccessfull=false;
                     executionFailed();
                 }
@@ -247,7 +249,7 @@ public class HAExecutor extends AbstractDPAASExecutor{
                     JobState toReturn=getActiveExecutor().getJobState(jobId);
                     isSuccessfull=true;
                     return toReturn;
-                } catch (DPAASExecutorException ex) {
+                } catch (ExecutorException ex) {
                     isSuccessfull=false;
                     executionFailed();
                 }

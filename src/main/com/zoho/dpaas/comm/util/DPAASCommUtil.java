@@ -15,6 +15,6 @@ public class DPAASCommUtil {
     }
 
     public enum ExecutorType {
-        SPARKSJS,SPARKSDCLUSTER,SPARKLOCAL
+        SPARK_SJS, SPARK_CLUSTER, LOCAL_SPARK
     }
 }

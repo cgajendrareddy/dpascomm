@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @Setter @Getter @JsonIgnoreProperties(ignoreUnknown = true)
-public class SJSExecutorConf extends DPAASExecutorConf {
+public class SJSConfig extends ExecutorConfig {
     private List<String> jobs;
     private String sjsURL;
     private Integer sparkClusterId;

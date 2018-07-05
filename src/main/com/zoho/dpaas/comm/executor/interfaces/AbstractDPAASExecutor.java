@@ -1,7 +1,7 @@
 package com.zoho.dpaas.comm.executor.interfaces;
 
-import com.zoho.dpaas.comm.executor.conf.DPAASExecutorConf;
-import com.zoho.dpaas.comm.executor.exception.DPAASExecutorException;
+import com.zoho.dpaas.comm.executor.conf.ExecutorConfig;
+import com.zoho.dpaas.comm.executor.exception.ExecutorException;
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
 import lombok.NonNull;
 
@@ -9,12 +9,12 @@ import lombok.NonNull;
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.ExecutorType;
 
 
-public abstract class AbstractDPAASExecutor implements DPAASExecutor {
+public abstract class AbstractDPAASExecutor implements Executor {
     @NonNull
-    DPAASExecutorConf executorConf;
+    ExecutorConfig executorConf;
 
 
-    public AbstractDPAASExecutor(DPAASExecutorConf executorConf){
+    public AbstractDPAASExecutor(ExecutorConfig executorConf){
         this.executorConf = executorConf;
     }
 
@@ -29,7 +29,7 @@ public abstract class AbstractDPAASExecutor implements DPAASExecutor {
     }
 
     @Override
-    public DPAASExecutorConf getConf() {
+    public ExecutorConfig getConf() {
         return this.executorConf;
     }
 
@@ -37,11 +37,11 @@ public abstract class AbstractDPAASExecutor implements DPAASExecutor {
     public ExecutorType getType() { return this.executorConf.getType(); }
 
     @Override
-    public abstract String submit(String... appArgs) throws DPAASExecutorException ;
+    public abstract String submit(String... appArgs) throws ExecutorException;
 
     @Override
-    public abstract boolean killJob(String jobId) throws DPAASExecutorException ;
+    public abstract boolean killJob(String jobId) throws ExecutorException;
 
     @Override
-    public abstract JobState getJobState(String jobId) throws DPAASExecutorException ;
+    public abstract JobState getJobState(String jobId) throws ExecutorException;
 }

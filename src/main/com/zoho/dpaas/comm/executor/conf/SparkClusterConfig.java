@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 @Setter @Getter @JsonIgnoreProperties(ignoreUnknown = true)
-public class SparkClusterExecutorConf extends DPAASExecutorConf {
+public class SparkClusterConfig extends ExecutorConfig {
     public static List<String> params = Arrays.asList("spark.executor.instances","num-cpu-cores","num-cpu-cores","spark.executor.memory","spark.executor.cores","spark.driver.cores","spark.driver.memory","spark.driver.supervise");
 
     private String host;
