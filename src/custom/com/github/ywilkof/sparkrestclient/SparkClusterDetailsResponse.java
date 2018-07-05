@@ -15,7 +15,6 @@ public class SparkClusterDetailsResponse extends SparkResponse {
     private int coresused;
     private int memory;
     private int memoryused;
-    private int memoryfree;
     private String url;
     private List<Worker> workers;
     private List<Context> activeapps;

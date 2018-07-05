@@ -12,6 +12,7 @@ public class Worker {
     private String webuiaddress;
     private int cores;
     private int coresused;
+    private int coresfree;
     private int memory;
     private int memoryused;
     private int memoryfree;
