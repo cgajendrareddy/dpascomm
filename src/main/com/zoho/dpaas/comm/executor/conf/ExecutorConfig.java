@@ -14,6 +14,7 @@ import java.util.Map;
 @Getter @Setter @JsonIgnoreProperties(ignoreUnknown = true)@ToString
 public class ExecutorConfig {
     private Integer id;
+    private String executorClass;
     private String name;
     private Boolean disabled;
     private ExecutorType type;
