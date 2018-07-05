@@ -55,6 +55,11 @@ public class SparkJobServer extends AbstractExecutor {
     }
 
     @Override
+    public boolean isResourcesAvailableFortheJob(String jobType) throws ExecutorException {
+        return false;
+    }
+
+    @Override
     public String submit(String... appArgs) throws ExecutorException {
         //TODO context for which job is to be submitted dynamically based on job type,context pool management
         //TODO SJSClient accepts only one inputJob as String

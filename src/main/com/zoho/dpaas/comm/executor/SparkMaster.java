@@ -46,6 +46,11 @@ public class SparkMaster extends AbstractExecutor {
     }
 
     @Override
+    public boolean isResourcesAvailableFortheJob(String jobType) throws ExecutorException {
+        return false;
+    }
+
+    @Override
     public String submit(String... appArgs) throws ExecutorException {
         //TODO Dynamic handling of cores and memory allocation for context
         SparkClusterConfig conf = (SparkClusterConfig) getConf();

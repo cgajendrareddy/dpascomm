@@ -3,6 +3,7 @@ package com.zoho.dpaas.comm.executor.interfaces;
 
 import com.zoho.dpaas.comm.executor.conf.ExecutorConfig;
 import com.zoho.dpaas.comm.executor.exception.ExecutorException;
+import com.zoho.dpaas.comm.executor.exception.HAExecutorException;
 import com.zoho.dpaas.comm.executor.job.JobType;
 
 import java.util.List;
@@ -45,6 +46,14 @@ public interface Executor {
      * @return
      */
     public ExecutorType getType();
+
+
+    /**
+     * To check whether there are executors available to submit a job.
+     * @param jobType
+     * @return
+     */
+    public boolean isResourcesAvailableFortheJob(String jobType) throws ExecutorException;
 
     /**
      * Submit a job to DPAAS via executor

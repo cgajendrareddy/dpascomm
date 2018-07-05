@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zoho.dpaas.comm.executor.conf.LocalSparkConfig;
 import com.zoho.dpaas.comm.executor.exception.ExecutorConfigException;
 import com.zoho.dpaas.comm.executor.exception.ExecutorException;
+import com.zoho.dpaas.comm.executor.exception.HAExecutorException;
 import com.zoho.dpaas.comm.executor.interfaces.AbstractExecutor;
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
 import org.json.JSONObject;
@@ -31,6 +32,11 @@ public class LocalSpark extends AbstractExecutor {
         } catch (IOException e){
             throw new ExecutorConfigException("Unable to initialize SparkCluster Conf",e);
         }
+    }
+
+    @Override
+    public boolean isResourcesAvailableFortheJob(String jobType) throws ExecutorException {
+        return false;
     }
 
     @Override

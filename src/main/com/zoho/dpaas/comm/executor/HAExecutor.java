@@ -53,6 +53,18 @@ public class HAExecutor extends AbstractExecutor {
         Executor executor = new HAExecutor(new JSONObject("{\"id\":1,\"name\":\"SPARKCLUSTER_HA1\",\"disabled\":true,\"type\":\"LOCAL_SPARK\",\"jobs\":[\"sampletransformation\",\"datasettransformation\",\"sampleextract\",\"dsauditstatefile\",\"rawdsaudittransformation\",\"samplepreview\",\"erroraudit\"],\"ids\":[2,3]}"));
         System.out.println("h");
     }
+
+    @Override
+    public boolean isResourcesAvailableFortheJob(String jobType) throws ExecutorException {
+        try {
+            return new ExecutorProxy(this).isResourcesAvailableFortheJob(jobType);
+        }
+        catch (HAExecutorException e)
+        {
+            throw new ExecutorException(this,e);
+        }
+    }
+
     @Override
     public String submit(String... appArgs) throws ExecutorException {
         try {
@@ -230,6 +242,29 @@ public class HAExecutor extends AbstractExecutor {
             while (getActiveExecutor() != null) {
                 try {
                     boolean toReturn=getActiveExecutor().killJob(jobId);
+                    isSuccessfull=true;
+                    return toReturn;
+                } catch (ExecutorException ex) {
+                    isSuccessfull=false;
+                    executionFailed();
+                }
+                finally
+                {
+                    if(isSuccessfull) {
+                        HAExecutor.currentActiveExecutor = getActiveExecutor();
+                    }
+                }
+
+            }
+            throw new HAExecutorException(HAExecutor,"Error occured");
+        }
+
+
+        public boolean isResourcesAvailableFortheJob(String jobType) throws HAExecutorException {
+            boolean isSuccessfull=false;
+            while (getActiveExecutor() != null) {
+                try {
+                    boolean toReturn=getActiveExecutor().isResourcesAvailableFortheJob(jobType);
                     isSuccessfull=true;
                     return toReturn;
                 } catch (ExecutorException ex) {
