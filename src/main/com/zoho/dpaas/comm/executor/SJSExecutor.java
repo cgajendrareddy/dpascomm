@@ -19,10 +19,10 @@ import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
 public class SJSExecutor extends AbstractDPAASExecutor {
 
     public SJSExecutor(JSONObject executorConf) throws DPAASExecutorException {
-        super(getSparkExecutorConf(executorConf));
+        super(getSJSExecutorConf(executorConf));
     }
 
-    static SJSExecutorConf getSparkExecutorConf(JSONObject executorConf) throws  DPAASExecutorException {
+    static SJSExecutorConf getSJSExecutorConf(JSONObject executorConf) throws  DPAASExecutorException {
         try {
             return new ObjectMapper().readValue(executorConf.toString(),SJSExecutorConf.class);
         } catch (IOException e){
