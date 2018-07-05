@@ -3,9 +3,12 @@ package com.zoho.dpaas.comm.executor.conf;
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.ExecutorType;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.zoho.dpaas.comm.executor.job.JobType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.List;
 
 @Getter @Setter @JsonIgnoreProperties(ignoreUnknown = true)@ToString
 public class ExecutorConfig {
@@ -14,4 +17,5 @@ public class ExecutorConfig {
     private Boolean disabled;
     private ExecutorType type;
     private int priority;
+    private List<JobType> jobTypes;
 }

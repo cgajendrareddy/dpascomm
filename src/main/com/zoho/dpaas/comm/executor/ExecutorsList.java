@@ -1,11 +1,12 @@
 package com.zoho.dpaas.comm.executor;
 
+import com.zoho.dpaas.comm.executor.exception.ExecutorConfigException;
+import com.zoho.dpaas.comm.executor.exception.ExecutorException;
 import com.zoho.dpaas.comm.executor.interfaces.Executor;
 import lombok.ToString;
 
 import java.util.List;
 import java.util.Map;
-import static java.util.stream.Collectors.*;
 
 @ToString
 public class ExecutorsList {
@@ -19,7 +20,7 @@ public class ExecutorsList {
         return executors.get(id);
     }
 
-    public List<Executor> getExecutorListFor(String jobType)
+    public List<Executor> getExecutorListFor(String jobType) throws ExecutorConfigException,ExecutorException
     {
         return null;
     }

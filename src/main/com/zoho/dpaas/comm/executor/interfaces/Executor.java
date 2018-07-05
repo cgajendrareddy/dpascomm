@@ -30,6 +30,17 @@ public interface Executor {
     public ExecutorConfig getConf();
 
     /**
+     * @return the priority of the executor
+     * @throws ExecutorException
+     */
+    public int getPriority();
+
+    /**
+     * @return
+     * @throws ExecutorException
+     */
+    public List<JobType> getJobTypes();
+    /**
      * Get ExecutorType of Executor
      * @return
      */
@@ -59,16 +70,6 @@ public interface Executor {
      */
     public JobState getJobState(String jobId) throws ExecutorException;
 
-    /**
-     * @return the priority of the executor
-     * @throws ExecutorException
-     */
-    public int getPriority() throws ExecutorException;
 
-    /**
-     * @return
-     * @throws ExecutorException
-     */
-    public List<JobType> getJobTypes()throws ExecutorException;
 
 }

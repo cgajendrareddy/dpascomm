@@ -3,8 +3,12 @@ package com.zoho.dpaas.comm.executor.interfaces;
 import com.zoho.dpaas.comm.executor.conf.ExecutorConfig;
 import com.zoho.dpaas.comm.executor.exception.ExecutorException;
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
+
+import com.zoho.dpaas.comm.executor.job.JobType;
 import lombok.NonNull;
 
+
+import java.util.List;
 
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.ExecutorType;
 
@@ -40,6 +44,12 @@ public abstract class AbstractExecutor implements Executor {
     public int getPriority(){
         return executorConf.getPriority();
     }
+
+    @Override
+    public List<JobType> getJobTypes() {
+        return executorConf.getJobTypes();
+    }
+
     @Override
     public abstract String submit(String... appArgs) throws ExecutorException;
 
