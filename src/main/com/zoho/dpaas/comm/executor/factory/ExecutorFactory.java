@@ -1,11 +1,9 @@
 package com.zoho.dpaas.comm.executor.factory;
 
-import com.zoho.dpaas.comm.executor.LocalSparkExecutor;
-import com.zoho.dpaas.comm.executor.SJSExecutor;
-import com.zoho.dpaas.comm.executor.SparkClusterExecutor;
-import com.zoho.dpaas.comm.executor.conf.ExecutorConfig;
+import com.zoho.dpaas.comm.executor.LocalSpark;
+import com.zoho.dpaas.comm.executor.SparkJobServer;
+import com.zoho.dpaas.comm.executor.SparkCluster;
 import com.zoho.dpaas.comm.executor.exception.ExecutorConfigException;
-import com.zoho.dpaas.comm.executor.exception.ExecutorException;
 import com.zoho.dpaas.comm.executor.interfaces.Executor;
 import com.zoho.dpaas.comm.executor.interfaces.ExecutorConfigProvider;
 import org.json.JSONObject;
@@ -25,11 +23,11 @@ public class ExecutorFactory {
         switch (executorType)
         {
             case LOCAL_SPARK:
-                return new LocalSparkExecutor(executorConfig);
+                return new LocalSpark(executorConfig);
             case SPARK_CLUSTER:
-                return new SparkClusterExecutor(executorConfig);
+                return new SparkCluster(executorConfig);
             case SPARK_SJS:
-                return new SJSExecutor(executorConfig);
+                return new SparkJobServer(executorConfig);
         }
             return null;
     }

@@ -97,7 +97,7 @@ public class HAExecutor extends AbstractDPAASExecutor{
         try {
             return new ObjectMapper().readValue(executorConf.toString(),HAExecutorConfig.class);
         } catch (IOException e){
-            throw new ExecutorConfigException("Unable to initialize SparkClusterExecutor Conf",e);
+            throw new ExecutorConfigException("Unable to initialize SparkCluster Conf",e);
         }
     }
 

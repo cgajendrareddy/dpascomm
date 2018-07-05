@@ -6,10 +6,10 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class SparkClusterExecutor extends HAExecutor {
+public class SparkCluster extends HAExecutor {
 
 
-    public SparkClusterExecutor(JSONObject executorConf) throws ExecutorConfigException {
+    public SparkCluster(JSONObject executorConf) throws ExecutorConfigException {
         this(getSparkExecutorList(executorConf));
     }
 
@@ -17,7 +17,7 @@ public class SparkClusterExecutor extends HAExecutor {
         return null;
     }
 
-    private SparkClusterExecutor(List<Executor> sparkClusterExecutors) throws ExecutorConfigException {
+    private SparkCluster(List<Executor> sparkClusterExecutors) throws ExecutorConfigException {
         super( sparkClusterExecutors);
     }
 }

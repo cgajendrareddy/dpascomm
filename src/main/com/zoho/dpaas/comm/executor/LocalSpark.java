@@ -10,17 +10,26 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class LocalSparkExecutor extends AbstractDPAASExecutor {
+public class LocalSpark extends AbstractDPAASExecutor {
 
-    public LocalSparkExecutor(JSONObject executorConf) throws ExecutorConfigException {
+    /**
+     * @param executorConf
+     * @throws ExecutorConfigException
+     */
+    public LocalSpark(JSONObject executorConf) throws ExecutorConfigException {
         super(getSparkExecutorConf(executorConf));
     }
 
+    /**
+     * @param executorConf
+     * @return the localsparkConfig object
+     * @throws ExecutorConfigException
+     */
     static LocalSparkConfig getSparkExecutorConf(JSONObject executorConf) throws ExecutorConfigException {
         try {
             return new ObjectMapper().readValue(executorConf.toString(),LocalSparkConfig.class);
         } catch (IOException e){
-            throw new ExecutorConfigException("Unable to initialize SparkClusterExecutor Conf",e);
+            throw new ExecutorConfigException("Unable to initialize SparkCluster Conf",e);
         }
     }
 
