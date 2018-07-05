@@ -5,43 +5,43 @@
     "disabled": true,
     "type": "LOCAL_SPARK",
     "priority" : 2,
-    "jobTypes": [
-      {
-        "jobType" :"sampletransformation",
-        "minPool" : 2,
-        "maxPool" : 3
+    "jobTypes": {
+      "sampletransformation": {
+        "jobType": "sampletransformation",
+        "minPool": 2,
+        "maxPool": 3
       },
-      {
-        "jobType" :"datasettransformation",
-        "minPool" : 2,
-        "maxPool" : 3
+      "datasettransformation": {
+        "jobType": "datasettransformation",
+        "minPool": 2,
+        "maxPool": 3
       },
-      {
-        "jobType" :"sampleextract",
-        "minPool" : 2,
-        "maxPool" : 3
+      "sampleextract": {
+        "jobType": "sampleextract",
+        "minPool": 2,
+        "maxPool": 3
       },
-      {
-        "jobType" :"dsauditstatefile",
-        "minPool" : 2,
-        "maxPool" : 3
+      "dsauditstatefile": {
+        "jobType": "dsauditstatefile",
+        "minPool": 2,
+        "maxPool": 3
       },
-      {
-        "jobType" :"rawdsaudittransformation",
-        "minPool" : 2,
-        "maxPool" : 3
+      "rawdsaudittransformation": {
+        "jobType": "rawdsaudittransformation",
+        "minPool": 2,
+        "maxPool": 3
       },
-      {
-        "jobType" :"samplepreview",
-        "minPool" : 2,
-        "maxPool" : 3
+      "samplepreview": {
+        "jobType": "samplepreview",
+        "minPool": 2,
+        "maxPool": 3
       },
-      {
-        "jobType" :"erroraudit",
-        "minPool" : 2,
-        "maxPool" : 3
+      "erroraudit": {
+        "jobType": "erroraudit",
+        "minPool": 2,
+        "maxPool": 3
       }
-    ],
+    },
     "async": true,
     "mainClass": "com.zoho.callback.LocalCallBackHandler"
   },
