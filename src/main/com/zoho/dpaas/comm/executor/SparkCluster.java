@@ -23,6 +23,13 @@ public class SparkCluster extends HAExecutor {
         super(getSparkMasters(sparkClusterConfig));
     }
 
+    /**
+     * @param sparkMasters
+     * @throws ExecutorConfigException
+     */
+    private SparkCluster(List<Executor> sparkMasters) throws ExecutorConfigException {
+        super( sparkMasters);
+    }
 
     /**
      * @param sparkMasterConfig
@@ -62,13 +69,7 @@ public class SparkCluster extends HAExecutor {
         return sparkMasters;
     }
 
-    /**
-     * @param sparkMasters
-     * @throws ExecutorConfigException
-     */
-    private SparkCluster(List<Executor> sparkMasters) throws ExecutorConfigException {
-        super( sparkMasters);
-    }
+
 
     public static void main(String[] args) throws ExecutorConfigException {
         Executor executor = new SparkCluster(new JSONObject("{\"id\":2,\"name\":\"Cluster1\",\"disabled\":true,\"type\":\"SPARK_CLUSTER\",\"priority\":1,\"jobTypes\":[{\"jobType\":\"datasettransformation\",\"minPool\":2,\"maxPool\":3,\"cores\":2,\"memory\":\"2G\"},{\"jobType\":\"sampleextract\",\"minPool\":2,\"maxPool\":3,\"cores\":2,\"memory\":\"2G\"},{\"jobType\":\"dsauditstatefile\",\"minPool\":2,\"maxPool\":3,\"cores\":2,\"memory\":\"2G\"},{\"jobType\":\"rawdsaudittransformation\",\"minPool\":2,\"maxPool\":3,\"cores\":2,\"memory\":\"2G\"},{\"jobType\":\"erroraudit\",\"minPool\":2,\"maxPool\":3,\"cores\":2,\"memory\":\"2G\"}],\"masters\":[{\"host\":\"192.168.230.186\",\"port\":\"6066\",\"webUIPort\":\"8090\"},{\"host\":\"192.168.171.27\",\"port\":\"6066\",\"webUIPort\":\"8090\"}],\"sparkVersion\":\"2.2.1\",\"mainClass\":\"com.zoho.dpaas.processor.ZDExecutor\",\"appResource\":\"\",\"clusterMode\":\"spark\",\"httpScheme\":\"http\",\"appName\":\"SparkStandAlone\",\"config\":{\"spark.driver.supervise\":\"true\",\"spark.driver.memory\":\"2g\",\"spark.driver.cores\":2,\"spark.executor.cores\":2,\"spark.executor.memory\":\"2g\",\"spark.executor.instances\":2},\"environmentVariables\":{\"SPARK_ENV_LOADED\":\"1\"}}"));
