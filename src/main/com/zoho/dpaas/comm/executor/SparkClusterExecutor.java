@@ -10,6 +10,7 @@ import com.github.ywilkof.sparkrestclient.interfaces.SparkPropertiesSpecificatio
 import com.zoho.dpaas.comm.executor.conf.SparkClusterExecutorConf;
 import com.zoho.dpaas.comm.executor.exception.DPAASExecutorException;
 import com.zoho.dpaas.comm.executor.interfaces.AbstractDPAASExecutor;
+import com.zoho.dpaas.comm.executor.interfaces.DPAASExecutor;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -85,5 +86,10 @@ public class SparkClusterExecutor extends AbstractDPAASExecutor {
         } catch (FailedSparkRequestException e) {
             throw new DPAASExecutorException(executor,"Unable to get Job Status. Message : "+e.getMessage(),e);
         }
+    }
+
+    public static void main(String[] args) throws DPAASExecutorException {
+        DPAASExecutor executor = new SparkClusterExecutor(new JSONObject("{\"id\":2,\"name\":\"Cluster1\",\"disabled\":true,\"type\":\"SPARKSDCLUSTER\",\"jobs\":[\"datasettransformation\",\"sampleextract\",\"dsauditstatefile\",\"rawdsaudittransformation\",\"erroraudit\"],\"host\":\"192.168.230.186\",\"port\":\"6066\",\"webUIPort\":\"8090\",\"sparkVersion\":\"2.2.1\",\"mainClass\":\"com.zoho.dpaas.processor.ZDExecutor\",\"appResource\":\"\",\"clusterMode\":\"spark\",\"httpScheme\":\"http\",\"appName\":\"SparkStandAlone\",\"config\":{\"spark.driver.supervise\":\"true\",\"spark.driver.memory\":\"2g\",\"spark.driver.cores\":2,\"spark.executor.cores\":2,\"spark.executor.memory\":\"2g\",\"spark.executor.instances\":2},\"environmentVariables\":{\"SPARK_ENV_LOADED\":\"1\"}}"));
+        System.out.println("c");
     }
 }

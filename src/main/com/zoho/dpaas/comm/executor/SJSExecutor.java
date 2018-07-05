@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zoho.dpaas.comm.executor.conf.SJSExecutorConf;
 import com.zoho.dpaas.comm.executor.exception.DPAASExecutorException;
 import com.zoho.dpaas.comm.executor.interfaces.AbstractDPAASExecutor;
+import com.zoho.dpaas.comm.executor.interfaces.DPAASExecutor;
 import org.json.JSONObject;
 import org.khaleesi.carfield.tools.sparkjobserver.api.ISparkJobServerClient;
 import org.khaleesi.carfield.tools.sparkjobserver.api.SparkJobResult;
@@ -72,5 +73,10 @@ public class SJSExecutor extends AbstractDPAASExecutor {
         } catch (SparkJobServerClientException e) {
             throw new DPAASExecutorException(executor,"Error in getting JobStatus. Message : "+e.getMessage(),e);
         }
+    }
+
+    public static void main(String[] args) throws DPAASExecutorException {
+        DPAASExecutor executor = new SJSExecutor(new JSONObject("{\"id\":4,\"name\":\"SJS1\",\"disabled\":false,\"type\":\"SPARKSJS\",\"sparkClusterId\":3,\"jobs\":[\"sampletransformation\",\"datasettransformation\",\"sampleextract\",\"dsauditstatefile\",\"rawdsaudittransformation\",\"samplepreview\",\"erroraudit\"],\"sjsURL\":\"http://192.168.230.186:9090\",\"contextTypes\":[{\"name\":\"sample\",\"configs\":{\"spark.cores.max\":2,\"spark.executor.memory\":\"512m\"},\"min\":\"2\",\"max\":\"10\"},{\"name\":\"audit\",\"configs\":{\"spark.cores.max\":2,\"spark.executor.memory\":\"512m\"},\"min\":2,\"max\":10},{\"name\":\"initial_job\",\"configs\":{\"spark.cores.max\":2,\"spark.executor.memory\":\"1G\"},\"min\":\"2\",\"max\":\"10\"}]}"));
+        System.out.println("b");
     }
 }
