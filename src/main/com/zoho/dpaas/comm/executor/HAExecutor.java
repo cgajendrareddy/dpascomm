@@ -57,46 +57,91 @@ public class HAExecutor extends AbstractExecutor {
     @Override
     public boolean isResourcesAvailableFortheJob(String jobType) throws ExecutorException {
         try {
-            return new ExecutorProxy(this).isResourcesAvailableFortheJob(jobType);
+            return currentActiveExecutor.isResourcesAvailableFortheJob(jobType);
         }
-        catch (HAExecutorException e)
+        catch (ExecutorException e)
         {
-            throw new ExecutorException(this,e);
+            try {
+                findCurrentActiveExecutor();
+                return currentActiveExecutor.isResourcesAvailableFortheJob(jobType);
+            }
+            catch (HAExecutorException e1)
+            {
+                throw new ExecutorException(this,e1);
+            }
         }
     }
 
     @Override
     public String submit(String... appArgs) throws ExecutorException {
         try {
-            return new ExecutorProxy(this).submit(appArgs);
+            return currentActiveExecutor.submit(appArgs);
         }
-        catch (HAExecutorException e)
+        catch (ExecutorException e)
         {
-            throw new ExecutorException(this,e);
+            try {
+                findCurrentActiveExecutor();
+                return currentActiveExecutor.submit(appArgs);
+            }
+            catch (HAExecutorException e1)
+            {
+                throw new ExecutorException(this,e1);
+            }
         }
 
     }
 
     @Override
     public boolean killJob(String jobId) throws ExecutorException {
+
         try {
-            return new ExecutorProxy(this).killJob(jobId);
+            return currentActiveExecutor.killJob(jobId);
         }
-        catch (HAExecutorException e)
+        catch (ExecutorException e)
         {
-            throw new ExecutorException(this,e);
+            try {
+                findCurrentActiveExecutor();
+                return currentActiveExecutor.killJob(jobId);
+            }
+            catch (HAExecutorException e1)
+            {
+                throw new ExecutorException(this,e1);
+            }
         }
+
     }
 
     @Override
     public JobState getJobState(String jobId) throws ExecutorException {
         try {
-            return new ExecutorProxy(this).getJobState(jobId);
+            return currentActiveExecutor.getJobState(jobId);
         }
-        catch (HAExecutorException e)
+        catch (ExecutorException e)
         {
-            throw new ExecutorException(this,e);
+            try {
+                findCurrentActiveExecutor();
+                return currentActiveExecutor.getJobState(jobId);
+            }
+            catch (HAExecutorException e1)
+            {
+                throw new ExecutorException(this,e1);
+            }
         }
+    }
+
+    @Override
+    public boolean isRunning() {
+        if(currentActiveExecutor.isRunning())
+        {
+            return true;
+        }
+        try {
+                findCurrentActiveExecutor();
+                return currentActiveExecutor.isRunning();
+            }
+            catch (HAExecutorException e1) {
+                return false;
+            }
     }
 
 
@@ -128,186 +173,16 @@ public class HAExecutor extends AbstractExecutor {
         }
         return executors;
     }
-
-
-    /**
-     * Executor Proxy which takes care of trying the primary and standby executors and throw exception if none of them works out.
-     */
-    public class ExecutorProxy
-    {
-        /**
-         * High availability executor instance
-         */
-        private HAExecutor HAExecutor;
-        /**
-         * active executor
-         */
-        private Executor activeExecutor;
-        /**
-         *list of executors
-         */
-        private List<Executor> dpasExecutors;
-
-        /**
-         * @param HAExecutor
-         */
-        public ExecutorProxy(HAExecutor HAExecutor)
+    private void findCurrentActiveExecutor() throws HAExecutorException {
+        for(Executor executor:executorsList)
         {
-            this.HAExecutor = HAExecutor;
-            this.dpasExecutors = new ArrayList<>(HAExecutor.executorsList);
-            if(HAExecutor.currentActiveExecutor !=null) {
-                setActiveExecutor(HAExecutor.currentActiveExecutor);
-            }
-        }
-
-        /**
-         * check whether the executor is part of the executor list and set it as current executor
-         * @param executor
-         */
-        private void setActiveExecutor(Executor executor)
-        {
-            if(dpasExecutors !=null && dpasExecutors.contains(executor)) {
-                this.activeExecutor=executor;
-                dpasExecutors.remove(activeExecutor);
-            }
-        }
-
-        /**
-         * @return the active executor or throws exception if none of them fails.
-         * @throws HAExecutorException
-         */
-        private Executor getActiveExecutor() throws HAExecutorException {
-            if(activeExecutor!=null)
+            if(executor.isRunning())
             {
-                return activeExecutor;
+                currentActiveExecutor=executor;
             }
-            setNextExecutorAsTheActiveExecutor();
-            return activeExecutor;
         }
-
-        /**
-         * set the next executor in the executorlist as active executor.
-         * @throws HAExecutorException
-         */
-        private void setNextExecutorAsTheActiveExecutor() throws HAExecutorException {
-            if(dpasExecutors.size()==0)
-            {
-                throw new HAExecutorException(HAExecutor,"Failed with all the dpasExecutors.");
-            }
-            setActiveExecutor(dpasExecutors.get(0));
-        }
-
-        /**
-         * execution failed.
-         */
-        private void executionFailed()
-        {
-            activeExecutor=null;
-        }
-
-        /**
-         * @param appArgs
-         * @return the jobid of the submission.
-         * @throws HAExecutorException
-         */
-        public String submit(String... appArgs) throws HAExecutorException {
-            boolean isSuccessfull=false;
-            while (getActiveExecutor() != null) {
-                try {
-                    String toReturn=getActiveExecutor().submit(appArgs);
-                    isSuccessfull=true;
-                    return toReturn;
-                } catch (ExecutorException ex) {
-                    isSuccessfull=false;
-                    executionFailed();
-                }
-                finally
-                {
-                    if(isSuccessfull) {
-                        HAExecutor.currentActiveExecutor = getActiveExecutor();
-                    }
-                }
-
-            }
-            throw new HAExecutorException(HAExecutor,"Error occured");
-        }
-
-        /**
-         * @param jobId
-         * @return  true if job is killed
-         * @throws HAExecutorException
-         */
-        public boolean killJob(String jobId) throws HAExecutorException {
-            boolean isSuccessfull=false;
-            while (getActiveExecutor() != null) {
-                try {
-                    boolean toReturn=getActiveExecutor().killJob(jobId);
-                    isSuccessfull=true;
-                    return toReturn;
-                } catch (ExecutorException ex) {
-                    isSuccessfull=false;
-                    executionFailed();
-                }
-                finally
-                {
-                    if(isSuccessfull) {
-                        HAExecutor.currentActiveExecutor = getActiveExecutor();
-                    }
-                }
-
-            }
-            throw new HAExecutorException(HAExecutor,"Error occured");
-        }
-
-
-        public boolean isResourcesAvailableFortheJob(String jobType) throws HAExecutorException {
-            boolean isSuccessfull=false;
-            while (getActiveExecutor() != null) {
-                try {
-                    boolean toReturn=getActiveExecutor().isResourcesAvailableFortheJob(jobType);
-                    isSuccessfull=true;
-                    return toReturn;
-                } catch (ExecutorException ex) {
-                    isSuccessfull=false;
-                    executionFailed();
-                }
-                finally
-                {
-                    if(isSuccessfull) {
-                        HAExecutor.currentActiveExecutor = getActiveExecutor();
-                    }
-                }
-
-            }
-            throw new HAExecutorException(HAExecutor,"Error occured");
-        }
-
-        /**
-         * @param jobId
-         * @return the job state.
-         * @throws HAExecutorException
-         */
-        public JobState getJobState(String jobId) throws HAExecutorException {
-            boolean isSuccessfull=false;
-            while (getActiveExecutor() != null) {
-                try {
-                    JobState toReturn=getActiveExecutor().getJobState(jobId);
-                    isSuccessfull=true;
-                    return toReturn;
-                } catch (ExecutorException ex) {
-                    isSuccessfull=false;
-                    executionFailed();
-                }
-                finally
-                {
-                    if(isSuccessfull) {
-                        HAExecutor.currentActiveExecutor = getActiveExecutor();
-                    }
-                }
-
-            }
-            throw new HAExecutorException(HAExecutor,"Error occured");
-        }
-
+        throw new HAExecutorException(this,"Failed with all the Executors.");
     }
+
+
 }

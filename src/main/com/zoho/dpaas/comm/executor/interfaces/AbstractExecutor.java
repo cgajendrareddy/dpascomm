@@ -51,12 +51,4 @@ public abstract class AbstractExecutor implements Executor {
         return executorConf.getJobTypes();
     }
 
-    @Override
-    public abstract String submit(String... appArgs) throws ExecutorException;
-
-    @Override
-    public abstract boolean killJob(String jobId) throws ExecutorException;
-
-    @Override
-    public abstract JobState getJobState(String jobId) throws ExecutorException;
 }

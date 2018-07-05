@@ -101,6 +101,17 @@ public class SparkMaster extends AbstractExecutor {
         }
     }
 
+    @Override
+    public boolean isRunning(){
+        boolean toReturn=false;
+
+        try {
+            return "ALIVE".equals(getSparkClusterDetails().getStatus());
+        } catch (ExecutorException e) {
+            return false;
+        }
+    }
+
     private SparkClusterDetailsResponse getSparkClusterDetails() throws ExecutorException {
         try {
             return new SparkClusterDetailsSpecificationImpl(client).getSparkClusterDetails();

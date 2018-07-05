@@ -92,6 +92,16 @@ public class SparkJobServer extends AbstractExecutor {
         }
     }
 
+    @Override
+    public boolean isRunning() {
+        try {
+            client.getContexts();
+        } catch (SparkJobServerClientException e) {
+           return false;
+        }
+        return true;
+    }
+
     public static void main(String[] args) throws ExecutorConfigException {
         Executor executor = new SparkJobServer(new JSONObject("{\"id\":4,\"name\":\"SJS1\",\"disabled\":false,\"type\":\"SPARK_SJS\",\"sparkClusterId\":3,\"jobs\":[\"sampletransformation\",\"datasettransformation\",\"sampleextract\",\"dsauditstatefile\",\"rawdsaudittransformation\",\"samplepreview\",\"erroraudit\"],\"sjsURL\":\"http://192.168.230.186:9090\",\"contextTypes\":[{\"name\":\"sample\",\"configs\":{\"spark.cores.max\":2,\"spark.executor.memory\":\"512m\"},\"min\":\"2\",\"max\":\"10\"},{\"name\":\"audit\",\"configs\":{\"spark.cores.max\":2,\"spark.executor.memory\":\"512m\"},\"min\":2,\"max\":10},{\"name\":\"initial_job\",\"configs\":{\"spark.cores.max\":2,\"spark.executor.memory\":\"1G\"},\"min\":\"2\",\"max\":\"10\"}]}"));
         System.out.println("b");

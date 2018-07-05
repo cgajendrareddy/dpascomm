@@ -80,5 +80,11 @@ public interface Executor {
     public JobState getJobState(String jobId) throws ExecutorException;
 
 
+    /**
+     * @return
+     */
+    public boolean isRunning();
+
+
 
 }

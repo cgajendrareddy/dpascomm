@@ -53,4 +53,10 @@ public class LocalSpark extends AbstractExecutor {
     public JobState getJobState(String jobId) throws ExecutorException {
         return null;
     }
+
+    @Override
+    public boolean isRunning()
+    {
+        return false;
+    }
 }
