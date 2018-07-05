@@ -4,13 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zoho.dpaas.comm.executor.conf.LocalSparkConfig;
 import com.zoho.dpaas.comm.executor.exception.ExecutorConfigException;
 import com.zoho.dpaas.comm.executor.exception.ExecutorException;
-import com.zoho.dpaas.comm.executor.interfaces.AbstractDPAASExecutor;
+import com.zoho.dpaas.comm.executor.interfaces.AbstractExecutor;
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class LocalSpark extends AbstractDPAASExecutor {
+public class LocalSpark extends AbstractExecutor {
 
     /**
      * @param executorConf

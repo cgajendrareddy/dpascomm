@@ -3,6 +3,9 @@ package com.zoho.dpaas.comm.executor.interfaces;
 
 import com.zoho.dpaas.comm.executor.conf.ExecutorConfig;
 import com.zoho.dpaas.comm.executor.exception.ExecutorException;
+import com.zoho.dpaas.comm.executor.job.JobType;
+
+import java.util.List;
 
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.ExecutorType;
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
@@ -55,5 +58,17 @@ public interface Executor {
      * @throws ExecutorException
      */
     public JobState getJobState(String jobId) throws ExecutorException;
+
+    /**
+     * @return the priority of the executor
+     * @throws ExecutorException
+     */
+    public int getPriority() throws ExecutorException;
+
+    /**
+     * @return
+     * @throws ExecutorException
+     */
+    public List<JobType> getJobTypes()throws ExecutorException;
 
 }

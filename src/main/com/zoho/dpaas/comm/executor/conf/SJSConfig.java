@@ -3,12 +3,13 @@ package com.zoho.dpaas.comm.executor.conf;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Setter @Getter @JsonIgnoreProperties(ignoreUnknown = true)
+@Setter @Getter @JsonIgnoreProperties(ignoreUnknown = true)@ToString
 public class SJSConfig extends ExecutorConfig {
     private List<String> jobs;
     private String sjsURL;

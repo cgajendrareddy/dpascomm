@@ -10,7 +10,7 @@ import com.github.ywilkof.sparkrestclient.interfaces.SparkPropertiesSpecificatio
 import com.zoho.dpaas.comm.executor.conf.SparkClusterConfig;
 import com.zoho.dpaas.comm.executor.exception.ExecutorConfigException;
 import com.zoho.dpaas.comm.executor.exception.ExecutorException;
-import com.zoho.dpaas.comm.executor.interfaces.AbstractDPAASExecutor;
+import com.zoho.dpaas.comm.executor.interfaces.AbstractExecutor;
 import com.zoho.dpaas.comm.executor.interfaces.Executor;
 import org.json.JSONObject;
 
@@ -21,7 +21,7 @@ import java.util.Map;
 
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
 
-public class SparkMaster extends AbstractDPAASExecutor {
+public class SparkMaster extends AbstractExecutor {
 
 
     /**

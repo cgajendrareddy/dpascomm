@@ -6,7 +6,7 @@ import com.zoho.dpaas.comm.executor.exception.ExecutorConfigException;
 import com.zoho.dpaas.comm.executor.exception.ExecutorException;
 import com.zoho.dpaas.comm.executor.exception.HAExecutorException;
 import com.zoho.dpaas.comm.executor.factory.ExecutorFactory;
-import com.zoho.dpaas.comm.executor.interfaces.AbstractDPAASExecutor;
+import com.zoho.dpaas.comm.executor.interfaces.AbstractExecutor;
 import com.zoho.dpaas.comm.executor.interfaces.Executor;
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
 
@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * High Availability Executor
  */
-public class HAExecutor extends AbstractDPAASExecutor{
+public class HAExecutor extends AbstractExecutor {
 
     /**
      * List of Executors

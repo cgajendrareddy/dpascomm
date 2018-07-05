@@ -9,12 +9,12 @@ import lombok.NonNull;
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.ExecutorType;
 
 
-public abstract class AbstractDPAASExecutor implements Executor {
+public abstract class AbstractExecutor implements Executor {
     @NonNull
     ExecutorConfig executorConf;
 
 
-    public AbstractDPAASExecutor(ExecutorConfig executorConf){
+    public AbstractExecutor(ExecutorConfig executorConf){
         this.executorConf = executorConf;
     }
 
@@ -25,17 +25,21 @@ public abstract class AbstractDPAASExecutor implements Executor {
 
     @Override
     public boolean isEnabled() {
-        return !this.executorConf.getDisabled();
+        return !executorConf.getDisabled();
     }
 
     @Override
     public ExecutorConfig getConf() {
-        return this.executorConf;
+        return executorConf;
     }
 
     @Override
-    public ExecutorType getType() { return this.executorConf.getType(); }
+    public ExecutorType getType() { return executorConf.getType(); }
 
+    @Override
+    public int getPriority(){
+        return executorConf.getPriority();
+    }
     @Override
     public abstract String submit(String... appArgs) throws ExecutorException;
 

@@ -3,12 +3,13 @@ package com.zoho.dpaas.comm.executor.conf;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-@Setter @Getter @JsonIgnoreProperties(ignoreUnknown = true)
+@Setter @Getter @JsonIgnoreProperties(ignoreUnknown = true)@ToString
 public class SparkClusterConfig extends ExecutorConfig {
     public static List<String> params = Arrays.asList("spark.executor.instances","num-cpu-cores","num-cpu-cores","spark.executor.memory","spark.executor.cores","spark.driver.cores","spark.driver.memory","spark.driver.supervise");
 

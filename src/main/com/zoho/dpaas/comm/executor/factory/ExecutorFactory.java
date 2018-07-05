@@ -1,5 +1,6 @@
 package com.zoho.dpaas.comm.executor.factory;
 
+import com.zoho.dpaas.comm.executor.ExecutorsList;
 import com.zoho.dpaas.comm.executor.LocalSpark;
 import com.zoho.dpaas.comm.executor.SparkJobServer;
 import com.zoho.dpaas.comm.executor.SparkCluster;
@@ -8,13 +9,15 @@ import com.zoho.dpaas.comm.executor.interfaces.Executor;
 import com.zoho.dpaas.comm.executor.interfaces.ExecutorConfigProvider;
 import org.json.JSONObject;
 
+import java.util.Map;
+
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.ExecutorType;
 
 public class ExecutorFactory {
     public static final String EXECUTOR_CONFIG_PROVIDER_SYSPROP_KEY="dpaas.comm.executor.config.provider";
     public static final String EXECUTOR_TYPE="type";
     private static ExecutorConfigProvider executorConfigProvider;
-
+    private static ExecutorsList executorsList;
 
     public  static Executor getExecutor(int executorId) throws ExecutorConfigException {
 
@@ -32,7 +35,18 @@ public class ExecutorFactory {
             return null;
     }
 
-    private static JSONObject getExecutorConfig(int executorId) throws ExecutorConfigException {
+    public static Executor getExecutor(String jobType)
+    {
+        return null;
+    }
+
+    private static void initializeExecutors()
+    {
+        // TODO: populate the executors
+    }
+
+    private static ExecutorConfigProvider getExecutorConfigProvider()throws ExecutorConfigException
+    {
         if(executorConfigProvider==null) {
             String executorConfigProviderClass = System.getProperty(EXECUTOR_CONFIG_PROVIDER_SYSPROP_KEY);
             if (executorConfigProviderClass == null) {
@@ -47,8 +61,15 @@ public class ExecutorFactory {
             }
 
         }
-        return executorConfigProvider.getExecutorConfig(executorId);
+        return executorConfigProvider;
+    }
+    private static JSONObject getExecutoConfigs() throws ExecutorConfigException {
+
+        return getExecutorConfigProvider().getExecutorConfigs();
     }
 
+    private static JSONObject getExecutorConfig(int executorId) throws ExecutorConfigException {
 
+        return getExecutorConfigProvider().getExecutorConfig(executorId);
+    }
 }

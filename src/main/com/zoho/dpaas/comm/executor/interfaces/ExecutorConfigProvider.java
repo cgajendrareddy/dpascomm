@@ -10,4 +10,7 @@ public interface ExecutorConfigProvider {
      * @return executor conf object for the executor id.
      */
     public JSONObject getExecutorConfig(int id);
+
+    public JSONObject getExecutorConfigs();
+
 }

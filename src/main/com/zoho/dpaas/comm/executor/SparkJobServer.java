@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zoho.dpaas.comm.executor.conf.SJSConfig;
 import com.zoho.dpaas.comm.executor.exception.ExecutorConfigException;
 import com.zoho.dpaas.comm.executor.exception.ExecutorException;
-import com.zoho.dpaas.comm.executor.interfaces.AbstractDPAASExecutor;
+import com.zoho.dpaas.comm.executor.interfaces.AbstractExecutor;
 import com.zoho.dpaas.comm.executor.interfaces.Executor;
 import org.json.JSONObject;
 import org.khaleesi.carfield.tools.sparkjobserver.api.ISparkJobServerClient;
@@ -15,7 +15,7 @@ import org.khaleesi.carfield.tools.sparkjobserver.api.SparkJobServerClientFactor
 
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
 
-public class SparkJobServer extends AbstractDPAASExecutor {
+public class SparkJobServer extends AbstractExecutor {
 
     /**
      * spark cluster for the SJS.
