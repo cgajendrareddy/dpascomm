@@ -4,42 +4,42 @@
     "name": "Local",
     "disabled": true,
     "type": "LOCAL_SPARK",
-    "priority": 2,
+    "priority" : 2,
     "jobTypes": [
       {
-        "jobType": "sampletransformation",
-        "minPool": 2,
-        "maxPool": 3
+        "jobType" :"sampletransformation",
+        "minPool" : 2,
+        "maxPool" : 3
       },
       {
-        "jobType": "datasettransformation",
-        "minPool": 2,
-        "maxPool": 3
+        "jobType" :"datasettransformation",
+        "minPool" : 2,
+        "maxPool" : 3
       },
       {
-        "jobType": "sampleextract",
-        "minPool": 2,
-        "maxPool": 3
+        "jobType" :"sampleextract",
+        "minPool" : 2,
+        "maxPool" : 3
       },
       {
-        "jobType": "dsauditstatefile",
-        "minPool": 2,
-        "maxPool": 3
+        "jobType" :"dsauditstatefile",
+        "minPool" : 2,
+        "maxPool" : 3
       },
       {
-        "jobType": "rawdsaudittransformation",
-        "minPool": 2,
-        "maxPool": 3
+        "jobType" :"rawdsaudittransformation",
+        "minPool" : 2,
+        "maxPool" : 3
       },
       {
-        "jobType": "samplepreview",
-        "minPool": 2,
-        "maxPool": 3
+        "jobType" :"samplepreview",
+        "minPool" : 2,
+        "maxPool" : 3
       },
       {
-        "jobType": "erroraudit",
-        "minPool": 2,
-        "maxPool": 3
+        "jobType" :"erroraudit",
+        "minPool" : 2,
+        "maxPool" : 3
       }
     ],
     "async": true,
@@ -51,44 +51,44 @@
     "disabled": true,
     "type": "SPARK_CLUSTER",
     "priority": 1,
-    "jobTypes": [
-      {
-        "jobType": "datasettransformation",
-        "minPool": 2,
-        "maxPool": 3,
-        "cores": 2,
-        "memory": "2G"
+    "jobTypes": {
+      "datasettransformation":{
+        "jobType" :"datasettransformation",
+        "minPool" : 2,
+        "maxPool" : 3 ,
+        "cores" : 2,
+        "memory" : "2G"
       },
-      {
-        "jobType": "sampleextract",
-        "minPool": 2,
-        "maxPool": 3,
-        "cores": 2,
-        "memory": "2G"
+      "sampleextract":{
+        "jobType" :"sampleextract",
+        "minPool" : 2,
+        "maxPool" : 3  ,
+        "cores" : 2,
+        "memory" : "2G"
       },
-      {
-        "jobType": "dsauditstatefile",
-        "minPool": 2,
-        "maxPool": 3,
-        "cores": 2,
-        "memory": "2G"
+      "dsauditstatefile":{
+        "jobType" :"dsauditstatefile",
+        "minPool" : 2,
+        "maxPool" : 3 ,
+        "cores" : 2,
+        "memory" : "2g"
       },
-      {
-        "jobType": "rawdsaudittransformation",
-        "minPool": 2,
-        "maxPool": 3,
-        "cores": 2,
-        "memory": "2G"
+      "rawdsaudittransformation":{
+        "jobType" :"rawdsaudittransformation",
+        "minPool" : 2,
+        "maxPool" : 3 ,
+        "cores" : 2,
+        "memory" : "2G"
       },
-      {
-        "jobType": "erroraudit",
-        "minPool": 2,
-        "maxPool": 3,
-        "cores": 2,
-        "memory": "2G"
+      "erroraudit":{
+        "jobType" :"erroraudit",
+        "minPool" : 2,
+        "maxPool" : 3 ,
+        "cores" : 2,
+        "memory" : "2G"
       }
-    ],
-    "masters": [
+    },
+    "masters":[
       {
         "host": "192.168.230.186",
         "port": "6066",
@@ -106,81 +106,82 @@
     "clusterMode": "spark",
     "httpScheme": "http",
     "appName": "SparkStandAlone",
-    "config": {
-      "spark.driver.supervise": "true",
-      "spark.driver.memory": "2g",
+    "config":{
+      "spark.driver.supervise" : "true",
+      "spark.driver.memory" : "2g",
       "spark.driver.cores": 2,
-      "spark.executor.cores": 2,
+      "spark.executor.cores" : 2,
       "spark.executor.memory": "2g",
       "spark.executor.instances": 2
     },
-    "environmentVariables": {
-      "SPARK_ENV_LOADED": "1"
-    }
+    "environmentVariables":
+    {"SPARK_ENV_LOADED": "1"}
+
   },
   {
     "id": 3,
     "name": "SJS1",
     "disabled": false,
     "type": "SPARK_SJS",
-    "priority": 3,
-    "sparkClusterId": 3,
-    "jobs": [
-      {
-        "jobType": "sampletransformation",
-        "minPool": 2,
-        "maxPool": 3,
-        "cores": 2,
-        "memory": "2G"
+    "priority" : 3,
+    "sparkClusterId": 2,
+    "jobs": {
+      "sampletransformation":{
+        "jobType" :"sampletransformation",
+        "minPool" : 2,
+        "maxPool" : 3,
+        "cores" : 2,
+        "memory" : "2G"
       },
-      {
-        "jobType": "datasettransformation",
-        "minPool": 2,
-        "maxPool": 3,
-        "cores": 2,
-        "memory": "2G"
+      "datasettransformation":{
+        "jobType" :"datasettransformation",
+        "minPool" : 2,
+        "maxPool" : 3,
+        "cores" : 2,
+        "memory" : "2G"
       },
-      {
-        "jobType": "sampleextract",
-        "minPool": 2,
-        "maxPool": 3,
-        "cores": 2,
-        "memory": "2G"
+      "sampleextract":{
+        "jobType" :"sampleextract",
+        "minPool" : 2,
+        "maxPool" : 3,
+        "cores" : 2,
+        "memory" : "2G"
       },
-      {
-        "jobType": "dsauditstatefile",
-        "minPool": 2,
-        "maxPool": 3,
-        "cores": 2,
-        "memory": "2G"
+      "dsauditstatefile":{
+        "jobType" :"dsauditstatefile",
+        "minPool" : 2,
+        "maxPool" : 3 ,
+        "cores" : 2,
+        "memory" : "2G"
       },
-      {
-        "jobType": "rawdsaudittransformation",
-        "minPool": 2,
-        "maxPool": 3,
-        "cores": 2,
-        "memory": "2G"
+      "rawdsaudittransformation":{
+        "jobType" :"rawdsaudittransformation",
+        "minPool" : 2,
+        "maxPool" : 3 ,
+        "cores" : 2,
+        "memory" : "2G"
       },
-      {
-        "jobType": "samplepreview",
-        "minPool": 2,
-        "maxPool": 3,
-        "cores": 2,
-        "memory": "2G"
+      "samplepreview":{
+        "jobType" :"samplepreview",
+        "minPool" : 2,
+        "maxPool" : 3 ,
+        "cores" : 2,
+        "memory" : "2G"
       },
-      {
-        "jobType": "erroraudit",
-        "minPool": 2,
-        "maxPool": 3,
-        "cores": 2,
-        "memory": "2G"
+      "erroraudit": {
+        "jobType" :"erroraudit",
+        "minPool" : 2,
+        "maxPool" : 3  ,
+        "cores" : 2,
+        "memory" : "2G"
       }
-    ],
-    "masters": [
+    },
+    "masters":[
       {
         "sjsURL": "http://192.168.230.186:9090"
       }
     ],
+    "sparkClusterId":3,
     "contextTypes": [
       {
         "name": "sample",
@@ -225,9 +226,6 @@
       "samplepreview",
       "erroraudit"
     ],
-    "ids": [
-      2,
-      3
-    ]
+    "ids" : [2,3]
   }
 ]
