@@ -19,16 +19,23 @@ import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
 
 public class SJSExecutor extends AbstractDPAASExecutor {
 
+    public final SparkClusterExecutor sparkClusterExecutor;
     public SJSExecutor(JSONObject executorConf) throws ExecutorConfigException {
         super(getSJSExecutorConf(executorConf));
+        sparkClusterExecutor=getSparkClusterExecutor(executorConf);
     }
 
     static SJSConfig getSJSExecutorConf(JSONObject executorConf) throws ExecutorConfigException {
         try {
             return new ObjectMapper().readValue(executorConf.toString(),SJSConfig.class);
-        } catch (IOException e){
+
+        } catch (Exception e){
             throw new ExecutorConfigException("Unable to initialize SparkClusterExecutor Conf",e);
         }
+    }
+
+    private SparkClusterExecutor getSparkClusterExecutor(JSONObject executorConf) throws ExecutorConfigException {
+        return new SparkClusterExecutor(executorConf);
     }
 
     @Override

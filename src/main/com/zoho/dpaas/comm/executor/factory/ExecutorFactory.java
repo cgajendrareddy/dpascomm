@@ -18,7 +18,7 @@ public class ExecutorFactory {
     private static ExecutorConfigProvider executorConfigProvider;
 
 
-    public  static Executor getExecutor(int executorId) throws ExecutorException, ExecutorConfigException {
+    public  static Executor getExecutor(int executorId) throws ExecutorConfigException {
 
         JSONObject executorConfig =getExecutorConfig(executorId);
         ExecutorType executorType=ExecutorType.valueOf(executorConfig.getString(EXECUTOR_TYPE));

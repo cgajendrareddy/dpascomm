@@ -34,9 +34,19 @@ public class HAExecutor extends AbstractDPAASExecutor{
      * @param executorConf
      * @throws ExecutorException
      */
-    public HAExecutor(JSONObject executorConf) throws ExecutorException, ExecutorConfigException {
+    public HAExecutor(JSONObject executorConf) throws  ExecutorConfigException {
         super(getExecutorConf(executorConf));
         this.executorsList = getExecutors((HAExecutorConfig)getConf());
+    }
+
+    /**
+     * @param executors
+     * @throws ExecutorException
+     * @throws ExecutorConfigException
+     */
+    public HAExecutor(List<Executor> executors) throws ExecutorConfigException {
+        super(null);
+        this.executorsList = executors;
     }
 
     public static void main(String[] args) throws ExecutorException, ExecutorConfigException {
@@ -83,11 +93,11 @@ public class HAExecutor extends AbstractDPAASExecutor{
      * @return the executor conf for this High availability Executor
      * @throws ExecutorException
      */
-    private static HAExecutorConfig getExecutorConf(JSONObject executorConf) throws ExecutorException {
+    private static HAExecutorConfig getExecutorConf(JSONObject executorConf) throws ExecutorConfigException {
         try {
             return new ObjectMapper().readValue(executorConf.toString(),HAExecutorConfig.class);
         } catch (IOException e){
-            throw new ExecutorException(null,"Unable to initialize SparkClusterExecutor Conf",e);
+            throw new ExecutorConfigException("Unable to initialize SparkClusterExecutor Conf",e);
         }
     }
 
@@ -95,7 +105,7 @@ public class HAExecutor extends AbstractDPAASExecutor{
      * @param executorConf
      * @return the list of executors configured
      */
-    private static List<Executor> getExecutors(HAExecutorConfig executorConf) throws ExecutorException, ExecutorConfigException {
+    private static List<Executor> getExecutors(HAExecutorConfig executorConf) throws ExecutorConfigException {
         List<Executor> executors = null;
         List<Integer> ids = executorConf.getIds();
         for(int i=0;i<ids.size();i++){
