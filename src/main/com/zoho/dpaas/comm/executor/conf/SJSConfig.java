@@ -14,7 +14,7 @@ public class SJSConfig extends ExecutorConfig {
     private Integer sparkClusterId;
     private Map<String,String> config;
 
-    private void addConfig(String configName,String configValue){
+    public void addConfig(String configName,String configValue){
         if(this.config == null){
             this.config = new HashMap<>(5);
         }

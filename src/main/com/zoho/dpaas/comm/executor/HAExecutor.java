@@ -76,18 +76,18 @@ public class HAExecutor extends AbstractExecutor {
     }
 
     @Override
-    public String submit(String... appArgs) throws ExecutorException {
+    public String submit(String jobType, String[] jobArgs) throws ExecutorException {
         try {
             if(currentActiveExecutor == null){
                 throw new ExecutorException(this,"Invalid Executor");
             }
-            return currentActiveExecutor.submit(appArgs);
+            return currentActiveExecutor.submit(jobType, );
         }
         catch (ExecutorException e)
         {
             try {
                 findCurrentActiveExecutor();
-                return currentActiveExecutor.submit(appArgs);
+                return currentActiveExecutor.submit(jobType, );
             }
             catch (HAExecutorException e1)
             {

@@ -1,18 +1,22 @@
-package com.zoho.dpaas.comm.executor;
+package com.zoho.dpaas.comm.executor.list;
 
 import com.zoho.dpaas.comm.executor.job.JobType;
+import org.khaleesi.carfield.tools.sparkjobserver.api.SparkJobInfo;
 
 import java.util.*;
 
-public class ContextList {
 
-    private Map<String,List<String>> jobTypeContextMap;
-    List<String> contexts;
+public class ContextList {
+    private final JobList jobList;
+    private final Map<String,List<String>> jobTypeContextMap;
+    final List<String> contexts;
     public static final String jobTypeSeperator="@";
-    public ContextList(List<String> contexts)
+    public static final String INFO_STATUS_RUNNING = "RUNNING";
+    public ContextList(List<String> contexts, List<SparkJobInfo> sparkJobInfo)
     {
         this.contexts=contexts;
         this.jobTypeContextMap=getJobTypeContextMap();
+        this.jobList=new JobList(sparkJobInfo);
     }
 
     private Map<String,List<String>> getJobTypeContextMap()
@@ -31,15 +35,40 @@ public class ContextList {
         }
         return jobTypeContextMap;
     }
-
-    public String getNewContextName(JobType jobType)
+    public String getContextFortheNewJob(JobType jobType)
     {
         int minPoolSize=jobType.getMinPool();
         int currentPoolSize=(jobTypeContextMap.containsKey(jobType.getJobType()))?jobTypeContextMap.get(jobType.getJobType()).size():0;
-        if(currentPoolSize>=minPoolSize)
+
+        String availableContext=getAvailableContextFortheNewJob(jobType);
+        if(availableContext!=null)
         {
+            return availableContext;
+        }
+        else if(currentPoolSize<minPoolSize)
+        {
+            return getNewContextName(jobType);
+        }
+        else{
             throw new RuntimeException("No Contexts can further be created for the jobType"+jobType);
         }
+
+    }
+    private String getAvailableContextFortheNewJob(JobType jobType)
+    {
+        List<String> availableContexts=jobList.getAvailableContexstForJob(contexts,jobType);
+        if(availableContexts!=null && !availableContexts.isEmpty())
+            return availableContexts.get(0);
+        return null;
+    }
+
+    private List<String> getContexts(JobType jobType) {
+
+        return jobList.getAvailableContexstForJob(contexts,jobType);
+    }
+
+    private String getNewContextName(JobType jobType)
+    {
         return jobType+jobTypeSeperator+getNextContextIndex(jobType);
     }
     private int getNextContextIndex(JobType jobType)
@@ -55,6 +84,7 @@ public class ContextList {
                 {
                     toReturn=contextIndex;
                 }
+
             }
         }
         return toReturn;

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zoho.dpaas.comm.executor.conf.LocalSparkConfig;
 import com.zoho.dpaas.comm.executor.exception.ExecutorConfigException;
 import com.zoho.dpaas.comm.executor.exception.ExecutorException;
-import com.zoho.dpaas.comm.executor.exception.HAExecutorException;
 import com.zoho.dpaas.comm.executor.interfaces.AbstractExecutor;
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
 import org.json.JSONObject;
@@ -40,7 +39,7 @@ public class LocalSpark extends AbstractExecutor {
     }
 
     @Override
-    public String submit(String... appArgs) throws ExecutorException {
+    public String submit(String jobType, String[] jobArgs) throws ExecutorException {
         return null;
     }
 

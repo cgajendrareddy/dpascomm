@@ -1,6 +1,6 @@
 package com.zoho.dpaas.comm.executor.factory;
 
-import com.zoho.dpaas.comm.executor.ExecutorsList;
+import com.zoho.dpaas.comm.executor.list.ExecutorsList;
 import com.zoho.dpaas.comm.executor.SparkCluster;
 import com.zoho.dpaas.comm.executor.SparkJobServer;
 import com.zoho.dpaas.comm.executor.exception.ExecutorConfigException;

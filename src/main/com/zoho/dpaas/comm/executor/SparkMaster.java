@@ -59,13 +59,13 @@ public class SparkMaster extends AbstractExecutor {
     }
 
     @Override
-    public String submit(String... appArgs) throws ExecutorException {
+    public String submit(String jobType, String[] jobArgs) throws ExecutorException {
         SparkClusterConfig conf = (SparkClusterConfig) getConf();
         JobSubmitRequestSpecificationImpl jobSubmit = new JobSubmitRequestSpecificationImpl(client);
         jobSubmit.appName(conf.getAppName());
         jobSubmit.appResource(conf.getAppResource());
         jobSubmit.mainClass(conf.getMainClass());
-        jobSubmit.appArgs(Arrays.asList(appArgs));
+        jobSubmit.appArgs(Arrays.asList(jobArgs));
         SparkPropertiesSpecification sparkPropertiesSpecification = jobSubmit.withProperties();
         Map<String,String> config = conf.getConfig();
         List<String> configParams = SparkClusterConfig.params;

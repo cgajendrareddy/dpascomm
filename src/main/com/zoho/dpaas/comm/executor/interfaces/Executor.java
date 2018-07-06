@@ -3,7 +3,6 @@ package com.zoho.dpaas.comm.executor.interfaces;
 
 import com.zoho.dpaas.comm.executor.conf.ExecutorConfig;
 import com.zoho.dpaas.comm.executor.exception.ExecutorException;
-import com.zoho.dpaas.comm.executor.exception.HAExecutorException;
 import com.zoho.dpaas.comm.executor.job.JobType;
 
 import java.util.Map;
@@ -57,11 +56,12 @@ public interface Executor {
 
     /**
      * Submit a job to DPAAS via executor
-     * @param appArgs
+     * @param jobType
+     * @param jobArgs
      * @return
      * @throws ExecutorException
      */
-    public String submit(String... appArgs) throws ExecutorException;
+    public String submit(String jobType, String[] jobArgs) throws ExecutorException;
 
     /**
      * Kill a submitted job
