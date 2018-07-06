@@ -62,7 +62,7 @@ public class SparkJobServer extends AbstractExecutor {
 
     @Override
     public boolean isResourcesAvailableFortheJob(String jobType) throws ExecutorException {
-        return sparkClusterExecutor.isResourcesAvailableFortheJob(jobType);
+        return contextList.getContextFortheNewJob(((SJSConfig) getConf()).getJobTypes().get(jobType))!=null;
     }
 
     @Override
