@@ -34,9 +34,10 @@ public class HAExecutor extends AbstractExecutor {
      * @param executorConf
      * @throws ExecutorException
      */
-    public HAExecutor(JSONObject executorConf) throws  ExecutorConfigException {
+    public HAExecutor(JSONObject executorConf) throws ExecutorConfigException, HAExecutorException {
         super(getExecutorConf(executorConf));
         this.executorsList = getExecutors((HAExecutorConfig)getConf());
+        findCurrentActiveExecutor();
     }
 
     /**
@@ -44,12 +45,13 @@ public class HAExecutor extends AbstractExecutor {
      * @throws ExecutorException
      * @throws ExecutorConfigException
      */
-    public HAExecutor(List<Executor> executors) throws ExecutorConfigException {
+    public HAExecutor(List<Executor> executors) throws  HAExecutorException {
         super(null);
         this.executorsList = executors;
+        findCurrentActiveExecutor();
     }
 
-    public static void main(String[] args) throws ExecutorException, ExecutorConfigException {
+    public static void main(String[] args) throws ExecutorConfigException, HAExecutorException, ExecutorException {
         Executor executor = new HAExecutor(new JSONObject("{\"id\":1,\"name\":\"SPARKCLUSTER_HA1\",\"disabled\":true,\"type\":\"LOCAL_SPARK\",\"jobs\":[\"sampletransformation\",\"datasettransformation\",\"sampleextract\",\"dsauditstatefile\",\"rawdsaudittransformation\",\"samplepreview\",\"erroraudit\"],\"ids\":[2,3]}"));
         System.out.println("h");
     }
@@ -78,16 +80,13 @@ public class HAExecutor extends AbstractExecutor {
     @Override
     public String submit(String jobType, String[] jobArgs) throws ExecutorException {
         try {
-            if(currentActiveExecutor == null){
-                throw new ExecutorException(this,"Invalid Executor");
-            }
-            return currentActiveExecutor.submit(jobType, );
+            return currentActiveExecutor.submit(jobType,jobArgs );
         }
         catch (ExecutorException e)
         {
             try {
                 findCurrentActiveExecutor();
-                return currentActiveExecutor.submit(jobType, );
+                return currentActiveExecutor.submit(jobType,jobArgs );
             }
             catch (HAExecutorException e1)
             {
@@ -101,9 +100,6 @@ public class HAExecutor extends AbstractExecutor {
     public boolean killJob(String jobId) throws ExecutorException {
 
         try {
-            if(currentActiveExecutor == null){
-                throw new ExecutorException(this,"Invalid Executor");
-            }
             return currentActiveExecutor.killJob(jobId);
         }
         catch (ExecutorException e)
@@ -123,9 +119,6 @@ public class HAExecutor extends AbstractExecutor {
     @Override
     public JobState getJobState(String jobId) throws ExecutorException {
         try {
-            if(currentActiveExecutor == null){
-                throw new ExecutorException(this,"Invalid Executor");
-            }
             return currentActiveExecutor.getJobState(jobId);
         }
         catch (ExecutorException e)
@@ -175,7 +168,7 @@ public class HAExecutor extends AbstractExecutor {
      * @param executorConf
      * @return the list of executors configured
      */
-    private static List<Executor> getExecutors(HAExecutorConfig executorConf) throws ExecutorConfigException {
+    private static List<Executor> getExecutors(HAExecutorConfig executorConf) throws ExecutorConfigException, HAExecutorException {
         List<Executor> executors = null;
         List<Integer> ids = executorConf.getIds();
         for(int i=0;i<ids.size();i++){

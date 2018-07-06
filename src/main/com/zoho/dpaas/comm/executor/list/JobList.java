@@ -1,8 +1,6 @@
 package com.zoho.dpaas.comm.executor.list;
 
-import com.zoho.dpaas.comm.executor.SparkJobServer;
 import com.zoho.dpaas.comm.executor.job.JobType;
-import org.apache.avro.generic.GenericData;
 import org.khaleesi.carfield.tools.sparkjobserver.api.SparkJobInfo;
 
 import java.util.ArrayList;

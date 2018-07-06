@@ -5,6 +5,7 @@ import com.zoho.dpaas.comm.executor.SparkCluster;
 import com.zoho.dpaas.comm.executor.SparkJobServer;
 import com.zoho.dpaas.comm.executor.exception.ExecutorConfigException;
 import com.zoho.dpaas.comm.executor.exception.ExecutorException;
+import com.zoho.dpaas.comm.executor.exception.HAExecutorException;
 import com.zoho.dpaas.comm.executor.interfaces.Executor;
 import com.zoho.dpaas.comm.executor.interfaces.ExecutorConfigProvider;
 import org.json.JSONObject;
@@ -19,7 +20,7 @@ public class ExecutorFactory {
     private static ExecutorConfigProvider executorConfigProvider;
     private static ExecutorsList executorsList;
 
-    public  static Executor getExecutor(int executorId) throws ExecutorConfigException {
+    public  static Executor getExecutor(int executorId) throws ExecutorConfigException, HAExecutorException {
 
         JSONObject executorConfig =getExecutorConfig(executorId);
         ExecutorType executorType=ExecutorType.valueOf(executorConfig.getString(EXECUTOR_TYPE));

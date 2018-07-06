@@ -5,6 +5,7 @@ import com.zoho.dpaas.comm.executor.conf.Master;
 import com.zoho.dpaas.comm.executor.conf.SparkClusterConfig;
 import com.zoho.dpaas.comm.executor.exception.ExecutorConfigException;
 import com.zoho.dpaas.comm.executor.exception.ExecutorException;
+import com.zoho.dpaas.comm.executor.exception.HAExecutorException;
 import com.zoho.dpaas.comm.executor.interfaces.Executor;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,7 +21,7 @@ public class SparkCluster extends HAExecutor {
      * @param sparkClusterConfig
      * @throws ExecutorConfigException
      */
-    public SparkCluster(JSONObject sparkClusterConfig) throws ExecutorConfigException {
+    public SparkCluster(JSONObject sparkClusterConfig) throws ExecutorConfigException, HAExecutorException {
         super(getSparkMasters(sparkClusterConfig));
     }
 
@@ -28,7 +29,7 @@ public class SparkCluster extends HAExecutor {
      * @param sparkMasters
      * @throws ExecutorConfigException
      */
-    private SparkCluster(List<Executor> sparkMasters) throws ExecutorConfigException {
+    private SparkCluster(List<Executor> sparkMasters) throws HAExecutorException {
         super( sparkMasters);
     }
 
@@ -72,9 +73,9 @@ public class SparkCluster extends HAExecutor {
 
 
 
-    public static void main(String[] args) throws ExecutorConfigException, ExecutorException {
+    public static void main(String[] args) throws ExecutorException,ExecutorConfigException, HAExecutorException {
         Executor executor = new SparkCluster(new JSONObject("{\"id\":2,\"name\":\"Cluster1\",\"disabled\":true,\"type\":\"SPARK_CLUSTER\",\"priority\":1,\"jobTypes\":{\"datasettransformation\":{\"jobType\":\"datasettransformation\",\"minPool\":2,\"maxPool\":3,\"cores\":2,\"memory\":\"2G\"},\"sampleextract\":{\"jobType\":\"sampleextract\",\"minPool\":2,\"maxPool\":3,\"cores\":2,\"memory\":\"2G\"},\"dsauditstatefile\":{\"jobType\":\"dsauditstatefile\",\"minPool\":2,\"maxPool\":3,\"cores\":2,\"memory\":\"2g\"},\"rawdsaudittransformation\":{\"jobType\":\"rawdsaudittransformation\",\"minPool\":2,\"maxPool\":3,\"cores\":2,\"memory\":\"2G\"},\"erroraudit\":{\"jobType\":\"erroraudit\",\"minPool\":2,\"maxPool\":3,\"cores\":2,\"memory\":\"2G\"}},\"masters\":[{\"host\":\"192.168.230.186\",\"port\":\"6066\",\"webUIPort\":\"8090\"},{\"host\":\"192.168.171.27\",\"port\":\"6066\",\"webUIPort\":\"8090\"}],\"sparkVersion\":\"2.2.1\",\"mainClass\":\"com.zoho.dpaas.processor.ZDExecutor\",\"appResource\":\"\",\"clusterMode\":\"spark\",\"httpScheme\":\"http\",\"appName\":\"SparkStandAlone\",\"config\":{\"spark.driver.supervise\":\"true\",\"spark.driver.memory\":\"2g\",\"spark.driver.cores\":2,\"spark.executor.cores\":2,\"spark.executor.memory\":\"2g\",\"spark.executor.instances\":2},\"environmentVariables\":{\"SPARK_ENV_LOADED\":\"1\"}}"));
-        System.out.println(executor.isResourcesAvailableFortheJob("datasettransformation"));
+        System.out.println(executor.submit("sampletransformation",new String[]{"datasettransformation"}));
         System.out.println("c");
     }
 }
