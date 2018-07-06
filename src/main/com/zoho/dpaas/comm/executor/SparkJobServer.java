@@ -69,14 +69,14 @@ public class SparkJobServer extends AbstractExecutor {
 
     @Override
     public boolean isResourcesAvailableFortheJob(String jobType) throws ExecutorException {
-        String existingContext = contextList.getExistingAvailableContext(((SJSConfig) getConf()).getJobTypes().get(jobType));
+        String existingContext = contextList.getExistingAvailableContext(getConf().getJobTypes().get(jobType));
         if(existingContext!=null && !existingContext.isEmpty())
         {
             return true;
         }
         else
         {
-            String newContext=contextList.getNewContext(((SJSConfig) getConf()).getJobTypes().get(jobType));
+            String newContext=contextList.getNewContext(getConf().getJobTypes().get(jobType));
             if(newContext==null || newContext.isEmpty())
             {
                 return true;

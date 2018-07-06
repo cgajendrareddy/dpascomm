@@ -1,6 +1,7 @@
 package com.zoho.dpaas.comm.executor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zoho.dpaas.comm.executor.conf.ExecutorConfig;
 import com.zoho.dpaas.comm.executor.conf.HAExecutorConfig;
 import com.zoho.dpaas.comm.executor.exception.ExecutorConfigException;
 import com.zoho.dpaas.comm.executor.exception.ExecutorException;
@@ -45,8 +46,8 @@ public class HAExecutor extends AbstractExecutor {
      * @throws ExecutorException
      * @throws ExecutorConfigException
      */
-    public HAExecutor(List<Executor> executors) throws  HAExecutorException {
-        super(null);
+    public HAExecutor(List<Executor> executors,ExecutorConfig executorConf) throws  HAExecutorException {
+        super(executorConf);
         this.executorsList = executors;
         findCurrentActiveExecutor();
     }

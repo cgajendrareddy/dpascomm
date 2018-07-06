@@ -11,11 +11,15 @@ import com.zoho.dpaas.comm.executor.exception.ExecutorException;
 import com.zoho.dpaas.comm.executor.exception.HAExecutorException;
 import com.zoho.dpaas.comm.executor.interfaces.AbstractExecutor;
 import com.zoho.dpaas.comm.executor.interfaces.Executor;
+import com.zoho.dpaas.comm.executor.job.JobType;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpParams;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
@@ -31,7 +35,9 @@ public class SparkMaster extends AbstractExecutor {
     public SparkMaster(JSONObject sparkMasterConfig) throws ExecutorConfigException {
         super(getSparkExecutorConf(sparkMasterConfig));
         SparkClusterConfig conf = (SparkClusterConfig) getConf();
-        client = SparkRestClient.builder().sparkVersion(conf.getSparkVersion()).httpScheme(conf.getHttpScheme()).masterHost(conf.getHost()).masterPort(conf.getPort()).environmentVariables(conf.getEnvironmentVariables()).build();
+        HttpClient httpClient =new DefaultHttpClient();
+        httpClient.getParams().setParameter("http.connection.timeout", new Integer(5000));
+        client = SparkRestClient.builder().sparkVersion(conf.getSparkVersion()).httpScheme(conf.getHttpScheme()).httpClient(httpClient).masterHost(conf.getHost()).masterPort(conf.getPort()).environmentVariables(conf.getEnvironmentVariables()).build();
     }
 
     /**
@@ -62,18 +68,28 @@ public class SparkMaster extends AbstractExecutor {
     @Override
     public String submit(String jobType, String[] jobArgs) throws ExecutorException {
         SparkClusterConfig conf = (SparkClusterConfig) getConf();
+        JobType jobTypeObj =getConf().getJobTypes().get(jobType);
+        if(jobTypeObj == null){
+            throw new ExecutorException(this,"Unsupported Job Type "+jobType);
+        }
+        if(!isResourcesAvailableFortheJob(jobType)){
+            throw new ExecutorException(this,"Insufficient Resources to execute the JobType :"+jobType);
+        }
         JobSubmitRequestSpecificationImpl jobSubmit = new JobSubmitRequestSpecificationImpl(client);
         jobSubmit.appName(conf.getAppName());
         jobSubmit.appResource(conf.getAppResource());
         jobSubmit.mainClass(conf.getMainClass());
         jobSubmit.appArgs(Arrays.asList(jobArgs));
         SparkPropertiesSpecification sparkPropertiesSpecification = jobSubmit.withProperties();
+        //Insert ExecutorParams for executor creation
+        Map<String,String> executorParams = new HashMap<>(jobTypeObj.getParamsForExecutorCreation());
+        for (Map.Entry<String, String> entry : executorParams.entrySet()) {
+            sparkPropertiesSpecification.put(entry.getKey(), entry.getValue());
+        }
+        //Insert Config params from the executor configurations
         Map<String,String> config = conf.getConfig();
-        List<String> configParams = SparkClusterConfig.params;
-        for(int i=0;i<configParams.size();i++){
-            if(config.get(configParams.get(i)) != null){
-                sparkPropertiesSpecification.put(configParams.get(i),config.get(configParams.get(i)));
-            }
+        for (Map.Entry<String, String> entry : config.entrySet()) {
+            sparkPropertiesSpecification.put(entry.getKey(), entry.getValue());
         }
         try {
             return jobSubmit.submit();
@@ -116,7 +132,10 @@ public class SparkMaster extends AbstractExecutor {
 
     private SparkClusterDetailsResponse getSparkClusterDetails() throws ExecutorException {
         try {
-            SparkRestClient confClient = SparkRestClient.builder().sparkVersion(client.getSparkVersion()).masterPort(((SparkClusterConfig)getConf()).getWebUIPort()).masterHost(client.getMasterHost()).build();
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpParams httpParams = httpClient.getParams().setParameter("http.connection.timeout", new Integer(5000));
+            ((DefaultHttpClient) httpClient).setParams(httpParams);
+            SparkRestClient confClient = SparkRestClient.builder().sparkVersion(client.getSparkVersion()).httpClient(httpClient).masterPort(((SparkClusterConfig)getConf()).getWebUIPort()).masterHost(client.getMasterHost()).build();
             return new SparkClusterDetailsSpecificationImpl(confClient).getSparkClusterDetails();
         }
         catch(Exception e)

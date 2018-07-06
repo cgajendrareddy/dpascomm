@@ -11,8 +11,6 @@ import java.util.Map;
 
 @Setter @Getter @JsonIgnoreProperties(ignoreUnknown = true)@ToString
 public class SparkClusterConfig extends ExecutorConfig {
-    public static List<String> params = Arrays.asList("spark.executor.instances","num-cpu-cores","num-cpu-cores","spark.executor.memory","spark.executor.cores","spark.driver.cores","spark.driver.memory","spark.driver.supervise");
-
     private List<Master> masters;
     private String sparkVersion;
     private String mainClass;

@@ -4,7 +4,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
 
@@ -17,7 +17,8 @@ public class SparkJobServerClient extends SparkJobServerClientImpl {
 
     public boolean killJob(String jobId) throws SparkJobServerClientException {
         ISparkJobServerClient client = SparkJobServerClientFactory.getInstance().createSparkJobServerClient(this.jobServerUrl);
-        final CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        final CloseableHttpClient httpClient = new DefaultHttpClient();
+        httpClient.getParams().setParameter("http.connection.timeout", new Integer(5000));
         try {
             //TODO add a check for the validation of contextName naming
             if (!isNotEmpty(jobId)) {
