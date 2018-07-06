@@ -1,5 +1,6 @@
 package com.zoho.dpaas.comm.executor.list;
 
+import com.zoho.dpaas.comm.executor.exception.ExecutorException;
 import com.zoho.dpaas.comm.executor.job.JobType;
 import org.khaleesi.carfield.tools.sparkjobserver.api.SparkJobInfo;
 
@@ -35,22 +36,24 @@ public class ContextList {
         }
         return jobTypeContextMap;
     }
-    public String getContextFortheNewJob(JobType jobType)
+    public String getExistingAvailableContext(JobType jobType)
     {
-        int minPoolSize=jobType.getMinPool();
-        int currentPoolSize=(jobTypeContextMap.containsKey(jobType.getJobType()))?jobTypeContextMap.get(jobType.getJobType()).size():0;
-
         String availableContext=getAvailableContextFortheNewJob(jobType);
         if(availableContext!=null)
         {
             return availableContext;
         }
-        else if(currentPoolSize<minPoolSize)
+        return null;
+    }
+    public String getNewContext(JobType jobType) throws ExecutorException {
+        int minPoolSize=jobType.getMinPool();
+        int currentPoolSize=(jobTypeContextMap.containsKey(jobType.getJobType()))?jobTypeContextMap.get(jobType.getJobType()).size():0;
+        if(currentPoolSize<minPoolSize)
         {
             return getNewContextName(jobType);
         }
         else{
-            throw new RuntimeException("No Contexts can further be created for the jobType"+jobType);
+            throw new ExecutorException(null,"No Contexts can further be created for the jobType"+jobType);
         }
 
     }

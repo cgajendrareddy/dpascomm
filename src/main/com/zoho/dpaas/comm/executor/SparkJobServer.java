@@ -9,6 +9,7 @@ import com.zoho.dpaas.comm.executor.exception.HAExecutorException;
 import com.zoho.dpaas.comm.executor.factory.ExecutorFactory;
 import com.zoho.dpaas.comm.executor.interfaces.AbstractExecutor;
 import com.zoho.dpaas.comm.executor.interfaces.Executor;
+import com.zoho.dpaas.comm.executor.job.JobType;
 import com.zoho.dpaas.comm.executor.list.ContextList;
 import org.json.JSONObject;
 import org.khaleesi.carfield.tools.sparkjobserver.api.SparkJobResult;
@@ -68,7 +69,39 @@ public class SparkJobServer extends AbstractExecutor {
 
     @Override
     public boolean isResourcesAvailableFortheJob(String jobType) throws ExecutorException {
-        return contextList.getContextFortheNewJob(((SJSConfig) getConf()).getJobTypes().get(jobType))!=null;
+        String existingContext = contextList.getExistingAvailableContext(((SJSConfig) getConf()).getJobTypes().get(jobType));
+        if(existingContext!=null && !existingContext.isEmpty())
+        {
+            return true;
+        }
+        else
+        {
+            String newContext=contextList.getNewContext(((SJSConfig) getConf()).getJobTypes().get(jobType));
+            if(newContext==null || newContext.isEmpty())
+            {
+                return true;
+            }
+            return false;
+        }
+
+    }
+    private String getContextForTheJob(JobType jobtype) throws ExecutorException {
+        try {
+            String toReturn;
+            toReturn = contextList.getExistingAvailableContext(jobtype);
+            if (toReturn == null || toReturn.isEmpty()) {
+                toReturn = contextList.getNewContext(jobtype);
+                try {
+                    client.createContext(toReturn,jobtype.getParamsForContextCreation());
+                } catch (SparkJobServerClientException e) {
+                    throw new ExecutorException(this,e);
+                }
+            }
+            return toReturn;
+        }catch (ExecutorException e)
+        {
+            throw new ExecutorException(this,e);
+        }
     }
 
     @Override
@@ -78,13 +111,8 @@ public class SparkJobServer extends AbstractExecutor {
         //TODO set appName(context name) , other spark configs in config map in SJSConfig before calling submit
         SJSConfig conf = (SJSConfig) getConf();
         Map<String,String> jobConf=new HashMap<String,String>(conf.getConfig());
-        String contextName=null;
-        if(contextList!=null && conf!=null && conf.getJobTypes()!=null && conf.getJobTypes().containsKey(jobType))
-        {
-            contextName=contextList.getContextFortheNewJob(conf.getJobTypes().get(jobType));
-            jobConf.put("context",contextName);
-        }
-
+        String contextName=getContextForTheJob(conf.getJobTypes().get(jobType));
+        jobConf.put("context",contextName);
 
         try{
             String data="input=";
