@@ -178,6 +178,7 @@ public class SparkJobServer extends AbstractExecutor {
         private SJSMonitor(SparkJobServer sjs)
         {
             super("SJS_MONITOR_"+sjs.getId());
+            this.sjs =sjs;
         }
         @Override
         public void run()

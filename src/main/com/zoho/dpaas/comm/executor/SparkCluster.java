@@ -55,9 +55,14 @@ public class SparkCluster extends HAExecutor {
         List<Executor> sparkMasters = null;
         SparkClusterConfig sparkClusterConf=getSparkExecutorConf(sparkClusterConfig);
         List<Master> masters = sparkClusterConf.getMasters();
-        sparkClusterConfig.remove("masters");
+        JSONObject clusterConfig = new JSONObject(sparkClusterConfig.toString());
+        if(clusterConfig.has("masters")){
+            clusterConfig.remove("masters");
+        } else {
+            throw new ExecutorConfigException("Masters cannot be null in Executor Id :"+sparkClusterConf.getId());
+        }
         for(Master master:masters){
-            JSONObject sparkCluster= new JSONObject(sparkClusterConfig.toString());
+            JSONObject sparkCluster= new JSONObject(clusterConfig.toString());
             JSONObject masterJSON = new JSONObject(master.toString());
             sparkCluster.put("masters",new JSONArray().put(masterJSON));
             SparkMaster sparkMaster = new SparkMaster(sparkCluster);
