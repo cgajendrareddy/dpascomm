@@ -114,13 +114,13 @@ public class SparkJobServer extends AbstractExecutor {
         Map<String,String> jobConf=new HashMap<String,String>(conf.getConfig());
         String contextName=getContextForTheJob(conf.getJobTypes().get(jobType));
         jobConf.put("context",contextName);
-
         try{
-            String data="input=";
+            String data="input=\"";
             try {
                 for(int i=0;i<jobArgs.length;i++){
                     data+= URLEncoder.encode("\""+jobArgs[i]+"\"","UTF-8")+" ";
                 }
+                data+="\"";
             } catch (UnsupportedEncodingException e) {
                 throw new ExecutorException(this,"Encoding error");
             }

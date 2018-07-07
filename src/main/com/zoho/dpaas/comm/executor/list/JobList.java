@@ -49,12 +49,12 @@ public class JobList {
     public List<String> getAvailableContexstForJob(List<String> contexts, JobType jobTypeObj)
     {
         List<String> toReturn=new ArrayList<>();
-        if(jobTypeObj!=null && contexts!=null && contexts.isEmpty()) {
+        if(jobTypeObj!=null && contexts!=null && !contexts.isEmpty()) {
             String jobtype = jobTypeObj.getJobType();
             for (String context : contexts) {
                 if (context != null && context.startsWith(jobtype)) {
                     List<SparkJobInfo> runningJobs=getJobsOfContext(context,INFO_STATUS_RUNNING);
-                    if(runningJobs!=null &&runningJobs.isEmpty())
+                    if(runningJobs==null || runningJobs.isEmpty())
                     {
                         toReturn.add(context);
                     }

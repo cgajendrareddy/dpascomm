@@ -126,7 +126,8 @@
       "sjsURL": "http://192.168.230.186:9090",
       "config": {
         "classPath":"spark.jobserver.TestSqlJob",
-        "context-factory" : "spark.jobserver.context.SQLContextFactory"
+        "context-factory" : "spark.jobserver.context.SQLContextFactory",
+        "appName":"snap"
       },
       "jobTypes": {
         "sampletransformation": {

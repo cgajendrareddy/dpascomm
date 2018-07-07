@@ -12,9 +12,8 @@ import com.zoho.dpaas.comm.executor.exception.HAExecutorException;
 import com.zoho.dpaas.comm.executor.interfaces.AbstractExecutor;
 import com.zoho.dpaas.comm.executor.interfaces.Executor;
 import com.zoho.dpaas.comm.executor.job.JobType;
+import com.zoho.dpaas.comm.util.DPAASCommUtil;
 import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpParams;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -35,8 +34,7 @@ public class SparkMaster extends AbstractExecutor {
     public SparkMaster(JSONObject sparkMasterConfig) throws ExecutorConfigException {
         super(getSparkExecutorConf(sparkMasterConfig));
         SparkClusterConfig conf = (SparkClusterConfig) getConf();
-        HttpClient httpClient =new DefaultHttpClient();
-        httpClient.getParams().setParameter("http.connection.timeout", new Integer(5000));
+        HttpClient httpClient = (HttpClient) DPAASCommUtil.getHttpClient(15000);
         client = SparkRestClient.builder().sparkVersion(conf.getSparkVersion()).httpScheme(conf.getHttpScheme()).httpClient(httpClient).masterHost(conf.getHost()).masterPort(conf.getPort()).environmentVariables(conf.getEnvironmentVariables()).build();
     }
 
@@ -132,9 +130,7 @@ public class SparkMaster extends AbstractExecutor {
 
     private SparkClusterDetailsResponse getSparkClusterDetails() throws ExecutorException {
         try {
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpParams httpParams = httpClient.getParams().setParameter("http.connection.timeout", new Integer(5000));
-            ((DefaultHttpClient) httpClient).setParams(httpParams);
+            HttpClient httpClient = (HttpClient) DPAASCommUtil.getHttpClient(15000);
             SparkRestClient confClient = SparkRestClient.builder().sparkVersion(client.getSparkVersion()).httpClient(httpClient).masterPort(((SparkClusterConfig)getConf()).getWebUIPort()).masterHost(client.getMasterHost()).build();
             return new SparkClusterDetailsSpecificationImpl(confClient).getSparkClusterDetails();
         }

@@ -1,5 +1,6 @@
 package org.khaleesi.carfield.tools.sparkjobserver.api;
 
+import com.zoho.dpaas.comm.util.DPAASCommUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpDelete;
@@ -18,7 +19,7 @@ public class SparkJobServerClient extends SparkJobServerClientImpl {
     public boolean killJob(String jobId) throws SparkJobServerClientException {
         ISparkJobServerClient client = SparkJobServerClientFactory.getInstance().createSparkJobServerClient(this.jobServerUrl);
         final CloseableHttpClient httpClient = new DefaultHttpClient();
-        httpClient.getParams().setParameter("http.connection.timeout", new Integer(5000));
+        DPAASCommUtil.addTimeOutParameter(httpClient,15000);
         try {
             //TODO add a check for the validation of contextName naming
             if (!isNotEmpty(jobId)) {
