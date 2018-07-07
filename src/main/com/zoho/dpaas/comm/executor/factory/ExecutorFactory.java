@@ -1,14 +1,17 @@
 package com.zoho.dpaas.comm.executor.factory;
 
-import com.zoho.dpaas.comm.executor.list.ExecutorsList;
 import com.zoho.dpaas.comm.executor.SparkCluster;
 import com.zoho.dpaas.comm.executor.SparkJobServer;
 import com.zoho.dpaas.comm.executor.exception.ExecutorConfigException;
 import com.zoho.dpaas.comm.executor.exception.ExecutorException;
-import com.zoho.dpaas.comm.executor.exception.HAExecutorException;
 import com.zoho.dpaas.comm.executor.interfaces.Executor;
 import com.zoho.dpaas.comm.executor.interfaces.ExecutorConfigProvider;
+import com.zoho.dpaas.comm.executor.list.ExecutorsList;
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.ExecutorType;
 
@@ -20,9 +23,21 @@ public class ExecutorFactory {
     private static ExecutorConfigProvider executorConfigProvider;
     private static ExecutorsList executorsList;
 
-    public  static Executor getExecutor(int executorId) throws ExecutorConfigException, HAExecutorException {
-
+    static {
+        try {
+            initializeExecutors();
+        } catch (ExecutorConfigException e) {
+            e.printStackTrace();
+        }
+    }
+    public  static Executor getExecutor(int executorId) throws ExecutorConfigException {
         JSONObject executorConfig =getExecutorConfig(executorId);
+        return getExecutor(executorConfig);
+    }
+
+    public  static Executor getExecutor(JSONObject executorConfig) throws ExecutorConfigException {
+
+
         ExecutorType executorType=ExecutorType.valueOf(executorConfig.getString(EXECUTOR_TYPE));
         switch (executorType)
         {
@@ -47,9 +62,22 @@ public class ExecutorFactory {
         return executorsList.getExecutor(jobType);
     }
 
-    private static void initializeExecutors()
-    {
-        // TODO: populate the executors
+    private static void initializeExecutors() throws ExecutorConfigException {
+        JSONObject executorsConfig = getExecutorConfigProvider().getExecutorConfigs();
+        JSONArray executors = executorsConfig.optJSONArray("executors");
+        Map<Integer,Executor> executorMap = new HashMap<>();
+        for(int i=0;i<executors.length();i++){
+            JSONObject executorJSON = executors.optJSONObject(i);
+            if(executorJSON!=null)
+            {
+                Executor executor = getExecutor(executorJSON);
+                if(executorMap.get(executor.getId()) != null){
+                    throw new ExecutorConfigException(" executor Id "+executor.getId()+" should be duplicated");
+                }
+                executorMap.put(executor.getId(),executor);
+            }
+        }
+        executorsList = new ExecutorsList(executorMap);
     }
 
     private static ExecutorConfigProvider getExecutorConfigProvider()throws ExecutorConfigException

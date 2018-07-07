@@ -75,7 +75,7 @@ public class ContextList {
 
     private String getNewContextName(JobType jobType)
     {
-        return jobType+jobTypeSeperator+getNextContextIndex(jobType);
+        return jobType.getJobType()+jobTypeSeperator+getNextContextIndex(jobType);
     }
     private int getNextContextIndex(JobType jobType)
     {

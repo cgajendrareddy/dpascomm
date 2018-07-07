@@ -1,5 +1,6 @@
 package com.zoho.dpaas.comm.executor.job;
 
+import com.zoho.dpaas.comm.executor.exception.ExecutorException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -20,9 +21,11 @@ public class JobType {
     //TODO Add executr Instances for SparkCluster
     private String memory;
 
-    public Map<String,String>  getParamsForContextCreation()
-    {
+    public Map<String,String>  getParamsForContextCreation() throws ExecutorException {
         Map<String,String> toReturn=new HashMap<>();
+        if(this.getCores() ==0 || this.getMemory() == null){
+            throw new ExecutorException(null,"Memory or cores cannot br null || 0");
+        }
         toReturn.put(CONTEXT_CORES,Integer.toString(this.getCores()));
         toReturn.put(CONTEXT_MEMORY,this.getMemory());
         return toReturn;

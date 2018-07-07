@@ -35,10 +35,14 @@ public class HAExecutor extends AbstractExecutor {
      * @param executorConf
      * @throws ExecutorException
      */
-    public HAExecutor(JSONObject executorConf) throws ExecutorConfigException, HAExecutorException {
+    public HAExecutor(JSONObject executorConf) throws ExecutorConfigException {
         super(getExecutorConf(executorConf));
-        this.executorsList = getExecutors((HAExecutorConfig)getConf());
-        findCurrentActiveExecutor();
+        try {
+            this.executorsList = getExecutors((HAExecutorConfig) getConf());
+            findCurrentActiveExecutor();
+        } catch (HAExecutorException e){
+            throw new ExecutorConfigException(e);
+        }
     }
 
     /**
@@ -46,15 +50,14 @@ public class HAExecutor extends AbstractExecutor {
      * @throws ExecutorException
      * @throws ExecutorConfigException
      */
-    public HAExecutor(List<Executor> executors,ExecutorConfig executorConf) throws  HAExecutorException {
+    public HAExecutor(List<Executor> executors,ExecutorConfig executorConf) throws  ExecutorConfigException {
         super(executorConf);
-        this.executorsList = executors;
-        findCurrentActiveExecutor();
-    }
-
-    public static void main(String[] args) throws ExecutorConfigException, HAExecutorException, ExecutorException {
-        Executor executor = new HAExecutor(new JSONObject("{\"id\":1,\"name\":\"SPARKCLUSTER_HA1\",\"disabled\":true,\"type\":\"LOCAL_SPARK\",\"jobs\":[\"sampletransformation\",\"datasettransformation\",\"sampleextract\",\"dsauditstatefile\",\"rawdsaudittransformation\",\"samplepreview\",\"erroraudit\"],\"ids\":[2,3]}"));
-        System.out.println("h");
+        try {
+            this.executorsList = executors;
+            findCurrentActiveExecutor();
+        } catch (HAExecutorException e){
+            throw new ExecutorConfigException(e);
+        }
     }
 
     @Override
@@ -169,7 +172,7 @@ public class HAExecutor extends AbstractExecutor {
      * @param executorConf
      * @return the list of executors configured
      */
-    private static List<Executor> getExecutors(HAExecutorConfig executorConf) throws ExecutorConfigException, HAExecutorException {
+    private static List<Executor> getExecutors(HAExecutorConfig executorConf) throws ExecutorConfigException {
         List<Executor> executors = null;
         List<Integer> ids = executorConf.getIds();
         for(int i=0;i<ids.size();i++){

@@ -26,7 +26,7 @@ public class ExecutorsList {
         Set<Executor> executorSet=getExecutors(jobType);
         for(Executor executor: executorSet)
         {
-            if(executor.isResourcesAvailableFortheJob(jobType))
+            if(executor.isEnabled() && executor.isRunning() && executor.isResourcesAvailableFortheJob(jobType))
             return executor;
         }
         throw new ExecutorException(null,"No Executors are ready to do the job "+jobType);
