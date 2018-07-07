@@ -110,7 +110,9 @@
         "spark.driver.supervise": "true",
         "spark.driver.memory": "2g",
         "spark.driver.cores": 2,
-        "spark.executor.instances": 2
+        "spark.executor.instances": 2,
+        "spark.driver.extraJavaOptions":"Dorg.xerial.snappy.tempdir=/home/sas/zdpas/spark/snappydata",
+        "spark.driver.extraJavaOptions":"Dorg.xerial.snappy.tempdir=/home/sas/zdpas/spark/snappydata"
       },
       "environmentVariables": {
         "SPARK_ENV_LOADED": "1"
