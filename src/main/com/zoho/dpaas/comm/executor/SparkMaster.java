@@ -34,7 +34,7 @@ public class SparkMaster extends AbstractExecutor {
     public SparkMaster(JSONObject sparkMasterConfig) throws ExecutorConfigException {
         super(getSparkExecutorConf(sparkMasterConfig));
         SparkClusterConfig conf = (SparkClusterConfig) getConf();
-        HttpClient httpClient = (HttpClient) DPAASCommUtil.getHttpClient(15000);
+        HttpClient httpClient = DPAASCommUtil.getHttpClient(30000);
         client = SparkRestClient.builder().sparkVersion(conf.getSparkVersion()).httpScheme(conf.getHttpScheme()).httpClient(httpClient).masterHost(conf.getHost()).masterPort(conf.getPort()).environmentVariables(conf.getEnvironmentVariables()).build();
     }
 
@@ -89,7 +89,9 @@ public class SparkMaster extends AbstractExecutor {
         for (Map.Entry<String, String> entry : config.entrySet()) {
             sparkPropertiesSpecification.put(entry.getKey(), entry.getValue());
         }
+
         try {
+
             return jobSubmit.submit();
         } catch (FailedSparkRequestException e) {
             throw new ExecutorException(this,"JOB Failed. Message : "+e.getMessage(),e);
@@ -130,7 +132,7 @@ public class SparkMaster extends AbstractExecutor {
 
     private SparkClusterDetailsResponse getSparkClusterDetails() throws ExecutorException {
         try {
-            HttpClient httpClient = (HttpClient) DPAASCommUtil.getHttpClient(15000);
+            HttpClient httpClient = DPAASCommUtil.getHttpClient(30000);
             SparkRestClient confClient = SparkRestClient.builder().sparkVersion(client.getSparkVersion()).httpClient(httpClient).masterPort(((SparkClusterConfig)getConf()).getWebUIPort()).masterHost(client.getMasterHost()).build();
             return new SparkClusterDetailsSpecificationImpl(confClient).getSparkClusterDetails();
         }

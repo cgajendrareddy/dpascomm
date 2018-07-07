@@ -19,7 +19,7 @@ public class SparkJobServerClient extends SparkJobServerClientImpl {
     public boolean killJob(String jobId) throws SparkJobServerClientException {
         ISparkJobServerClient client = SparkJobServerClientFactory.getInstance().createSparkJobServerClient(this.jobServerUrl);
         final CloseableHttpClient httpClient = new DefaultHttpClient();
-        DPAASCommUtil.addTimeOutParameter(httpClient,15000);
+        DPAASCommUtil.addTimeOutParameter(httpClient,30000);
         try {
             //TODO add a check for the validation of contextName naming
             if (!isNotEmpty(jobId)) {

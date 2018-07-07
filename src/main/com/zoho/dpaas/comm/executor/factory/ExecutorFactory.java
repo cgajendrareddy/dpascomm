@@ -68,13 +68,16 @@ public class ExecutorFactory {
         Map<Integer,Executor> executorMap = new HashMap<>();
         for(int i=0;i<executors.length();i++){
             JSONObject executorJSON = executors.optJSONObject(i);
-            if(executorJSON!=null)
-            {
-                Executor executor = getExecutor(executorJSON);
-                if(executorMap.get(executor.getId()) != null){
-                    throw new ExecutorConfigException(" executor Id "+executor.getId()+" should be duplicated");
+            try {
+                if (executorJSON != null && !executorJSON.optBoolean("disabled")) {
+                    Executor executor = getExecutor(executorJSON);
+                    if (executorMap.get(executor.getId()) != null) {
+                        throw new ExecutorConfigException(" executor Id " + executor.getId() + " should be duplicated");
+                    }
+                    executorMap.put(executor.getId(), executor);
                 }
-                executorMap.put(executor.getId(),executor);
+            }catch (Exception e){
+                e.printStackTrace();
             }
         }
         executorsList = new ExecutorsList(executorMap);
