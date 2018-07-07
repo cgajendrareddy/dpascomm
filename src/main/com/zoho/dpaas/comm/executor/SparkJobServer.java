@@ -36,12 +36,19 @@ public class SparkJobServer extends AbstractExecutor {
      * @param executorConf
      * @throws ExecutorConfigException
      */
-    public SparkJobServer(JSONObject executorConf) throws ExecutorConfigException, HAExecutorException, ExecutorException {
+    public SparkJobServer(JSONObject executorConf) throws ExecutorConfigException {
         super(getSJSExecutorConf(executorConf));
+        try {
         sparkClusterExecutor=getSparkClusterExecutor(getConf());
         client = new SparkJobServerClient(((SJSConfig)getConf()).getSjsURL());
-        poll();
-        new SJSMonitor(this).start();
+            poll();
+            new SJSMonitor(this).start();
+        }
+        catch (Exception e)
+        {
+            throw new ExecutorConfigException(e);
+        }
+
     }
 
     /**
