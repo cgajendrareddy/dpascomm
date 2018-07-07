@@ -191,14 +191,15 @@ public class SparkJobServer extends AbstractExecutor {
         @Override
         public void run()
         {
-            try {
-                sjs.poll();
-                Thread.sleep(1000);
-            } catch (ExecutorException e) {
-                e.printStackTrace();
-            }
-            catch (InterruptedException e) {
-                e.printStackTrace();
+            while (true) {
+                try {
+                    sjs.poll();
+                    Thread.sleep(1000);
+                } catch (ExecutorException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
 
