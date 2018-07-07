@@ -36,10 +36,11 @@ public class SparkJobServer extends AbstractExecutor {
      * @param executorConf
      * @throws ExecutorConfigException
      */
-    public SparkJobServer(JSONObject executorConf) throws ExecutorConfigException, HAExecutorException {
+    public SparkJobServer(JSONObject executorConf) throws ExecutorConfigException, HAExecutorException, ExecutorException {
         super(getSJSExecutorConf(executorConf));
         sparkClusterExecutor=getSparkClusterExecutor(getConf());
         client = new SparkJobServerClient(((SJSConfig)getConf()).getSjsURL());
+        poll();
         new SJSMonitor(this).start();
     }
 
@@ -69,20 +70,20 @@ public class SparkJobServer extends AbstractExecutor {
 
     @Override
     public boolean isResourcesAvailableFortheJob(String jobType) throws ExecutorException {
-        String existingContext = contextList.getExistingAvailableContext(getConf().getJobTypes().get(jobType));
+        String existingContext = contextList.getExistingAvailableContext(((SJSConfig) getConf()).getJobTypes().get(jobType));
         if(existingContext!=null && !existingContext.isEmpty())
         {
             return true;
         }
         else
         {
-            String newContext=contextList.getNewContext(getConf().getJobTypes().get(jobType));
+            String newContext=contextList.getNewContext(((SJSConfig) getConf()).getJobTypes().get(jobType));
             if(newContext==null || newContext.isEmpty())
             {
                 return true;
             }
-            return false;
         }
+        return false;
 
     }
     private String getContextForTheJob(JobType jobtype) throws ExecutorException {
@@ -178,7 +179,7 @@ public class SparkJobServer extends AbstractExecutor {
         private SJSMonitor(SparkJobServer sjs)
         {
             super("SJS_MONITOR_"+sjs.getId());
-            this.sjs =sjs;
+            this.sjs=sjs;
         }
         @Override
         public void run()
