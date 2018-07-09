@@ -1,6 +1,7 @@
 package com.zoho.dpaas.comm.executor.conf;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,6 +14,9 @@ public class SJSConfig extends ExecutorConfig {
     private String sjsURL;
     private Integer sparkClusterId;
     private Map<String,String> config;
+    private String classPath;
+    @JsonProperty(value = "context-factory")
+    private String contextFactory;
 
     public void addConfig(String configName,String configValue){
         if(this.config == null){

@@ -6,44 +6,49 @@
       "disabled": true,
       "type": "LOCAL_SPARK",
       "priority": 2,
+      "classPath": "com.zoho.dpaas.comm.executor.LocalSpark",
       "jobTypes": {
         "datasettransformation": {
           "jobType": "datasettransformation",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2G"
+          "memory": "2G",
+          "classPath": "com.zoho.dpaas.comm.executor.LocalSpark"
         },
         "sampleextract": {
           "jobType": "sampleextract",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2G"
+          "memory": "2G",
+          "classPath": "com.zoho.dpaas.comm.executor.LocalSpark"
         },
         "dsauditstatefile": {
           "jobType": "dsauditstatefile",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2g"
+          "memory": "2g",
+          "classPath": "com.zoho.dpaas.comm.executor.LocalSpark"
         },
         "rawdsaudittransformation": {
           "jobType": "rawdsaudittransformation",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2G"
+          "memory": "2G",
+          "classPath": "com.zoho.dpaas.comm.executor.LocalSpark"
         },
         "erroraudit": {
           "jobType": "erroraudit",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2G"
+          "memory": "2G",
+          "classPath": "com.zoho.dpaas.comm.executor.LocalSpark"
         }
-      },
-      "className": "com.zoho.dpaas.comm.executor.LocalSpark"
+      }
     },
     {
       "id": 2,
@@ -57,35 +62,40 @@
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2G"
+          "memory": "2G",
+          "classPath": "com.zoho.dpaas.processor.ZDExecutor"
         },
         "sampleextract": {
           "jobType": "sampleextract",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2G"
+          "memory": "2G",
+          "classPath": "com.zoho.dpaas.processor.ZDExecutor"
         },
         "dsauditstatefile": {
           "jobType": "dsauditstatefile",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2g"
+          "memory": "2g",
+          "classPath": "com.zoho.dpaas.processor.ZDExecutor"
         },
         "rawdsaudittransformation": {
           "jobType": "rawdsaudittransformation",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2G"
+          "memory": "2G",
+          "classPath": "com.zoho.dpaas.processor.ZDExecutor"
         },
         "erroraudit": {
           "jobType": "erroraudit",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2G"
+          "memory": "2G",
+          "classPath": "com.zoho.dpaas.processor.ZDExecutor"
         }
       },
       "masters": [
@@ -101,7 +111,7 @@
         }
       ],
       "sparkVersion": "2.2.1",
-      "mainClass": "com.zoho.dpaas.processor.ZDExecutor",
+      "classPath": "com.zoho.dpaas.processor.ZDExecutor",
       "appResource": "",
       "clusterMode": "spark",
       "httpScheme": "http",
@@ -126,9 +136,9 @@
       "priority": 3,
       "sparkClusterId": 2,
       "sjsURL": "http://192.168.230.186:9090",
+      "classPath":"spark.jobserver.TestSqlJob",
+      "context-factory" : "spark.jobserver.context.SQLContextFactory",
       "config": {
-        "classPath":"spark.jobserver.TestSqlJob",
-        "context-factory" : "spark.jobserver.context.SQLContextFactory",
         "appName":"snap"
       },
       "jobTypes": {
@@ -137,35 +147,40 @@
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2G"
+          "memory": "2G",
+          "classPath":"spark.jobserver.TestSqlJob"
         },
         "sampleextract": {
           "jobType": "sampleextract",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2G"
+          "memory": "2G",
+          "classPath":"spark.jobserver.TestSqlJob"
         },
         "dsauditstatefile": {
           "jobType": "dsauditstatefile",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2g"
+          "memory": "2g",
+          "classPath":"spark.jobserver.TestSqlJob"
         },
         "rawdsaudittransformation": {
           "jobType": "rawdsaudittransformation",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2G"
+          "memory": "2G",
+          "classPath":"spark.jobserver.TestSqlJob"
         },
         "erroraudit": {
           "jobType": "erroraudit",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2G"
+          "memory": "2G",
+          "classPath":"spark.jobserver.TestSqlJob"
         }
       }
     },
@@ -180,35 +195,40 @@
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2G"
+          "memory": "2G",
+          "classPath":"spark.jobserver.TestSqlJob"
         },
         "sampleextract": {
           "jobType": "sampleextract",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2G"
+          "memory": "2G",
+          "classPath":"spark.jobserver.TestSqlJob"
         },
         "dsauditstatefile": {
           "jobType": "dsauditstatefile",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2g"
+          "memory": "2g",
+          "classPath":"spark.jobserver.TestSqlJob"
         },
         "rawdsaudittransformation": {
           "jobType": "rawdsaudittransformation",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2G"
+          "memory": "2G",
+          "classPath":"spark.jobserver.TestSqlJob"
         },
         "erroraudit": {
           "jobType": "erroraudit",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2G"
+          "memory": "2G",
+          "classPath":"spark.jobserver.TestSqlJob"
         }
       },
       "ids": [
