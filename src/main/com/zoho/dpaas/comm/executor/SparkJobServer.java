@@ -10,6 +10,8 @@ import com.zoho.dpaas.comm.executor.interfaces.AbstractExecutor;
 import com.zoho.dpaas.comm.executor.interfaces.Executor;
 import com.zoho.dpaas.comm.executor.job.JobType;
 import com.zoho.dpaas.comm.executor.list.ContextList;
+import com.zoho.dpaas.comm.executor.monitor.ExecutorMonitor;
+import com.zoho.dpaas.comm.executor.monitor.Monitorable;
 import org.json.JSONObject;
 import org.khaleesi.carfield.tools.sparkjobserver.api.SparkJobResult;
 import org.khaleesi.carfield.tools.sparkjobserver.api.SparkJobServerClient;
@@ -22,7 +24,7 @@ import java.util.Map;
 
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
 
-public class SparkJobServer extends AbstractExecutor {
+public class SparkJobServer extends AbstractExecutor implements Monitorable {
 
     /**
      * spark cluster for the SJS.
@@ -40,8 +42,8 @@ public class SparkJobServer extends AbstractExecutor {
         try {
         sparkClusterExecutor=getSparkClusterExecutor(getConf());
         client = new SparkJobServerClient(((SJSConfig)getConf()).getSjsURL());
-            poll();
-            new SJSMonitor(this).start();
+            monitor();
+            new ExecutorMonitor(this).start();
         }
         catch (Exception e)
         {
@@ -173,41 +175,24 @@ public class SparkJobServer extends AbstractExecutor {
         System.out.println("b");
     }
 
-    public void poll() throws ExecutorException {
+    @Override
+    public void setIsRunning(boolean running) {
+        this.isUp=running;
+    }
+
+    @Override
+    public void monitor() throws ExecutorException {
         try {
             contextList=new ContextList(client.getContexts(), client.getJobs());
-            isUp=true;
         }
         catch (SparkJobServerClientException e)
         {
-            isUp=false;
             throw new ExecutorException(this,e);
         }
     }
-    class SJSMonitor extends Thread
-    {
-        private SparkJobServer sjs;
-        private SJSMonitor(SparkJobServer sjs)
-        {
-            super("SJS_MONITOR_"+sjs.getId());
-            this.sjs=sjs;
-        }
-        @Override
-        public void run()
-        {
-            while (true) {
-                try {
-                    sjs.poll();
-                    Thread.sleep(1000);
-                } catch (ExecutorException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
 
-
-        }
+    @Override
+    public String getMonitorName() {
+        return this.getType()+getConf().getName();
     }
-
 }

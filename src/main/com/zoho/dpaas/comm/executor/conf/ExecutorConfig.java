@@ -16,7 +16,7 @@ public class ExecutorConfig {
     private String executorClass;
     private String name;
     private Boolean disabled;
-    private ExecutorType type;
+    private String type;
     private int priority;
     private Map<String,JobType> jobTypes;
 }

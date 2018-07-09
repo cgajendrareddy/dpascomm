@@ -7,7 +7,6 @@ import com.zoho.dpaas.comm.executor.job.JobType;
 
 import java.util.Map;
 
-import static com.zoho.dpaas.comm.util.DPAASCommUtil.ExecutorType;
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
 
 public interface Executor {
@@ -44,7 +43,7 @@ public interface Executor {
      * Get ExecutorType of Executor
      * @return
      */
-    public ExecutorType getType();
+    public String getType();
 
 
     /**

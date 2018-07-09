@@ -5,6 +5,7 @@ import com.github.ywilkof.sparkrestclient.*;
 import com.github.ywilkof.sparkrestclient.interfaces.JobStatusRequestSpecification;
 import com.github.ywilkof.sparkrestclient.interfaces.KillJobRequestSpecification;
 import com.github.ywilkof.sparkrestclient.interfaces.SparkPropertiesSpecification;
+import com.zoho.dpaas.comm.executor.conf.SJSConfig;
 import com.zoho.dpaas.comm.executor.conf.SparkClusterConfig;
 import com.zoho.dpaas.comm.executor.exception.ExecutorConfigException;
 import com.zoho.dpaas.comm.executor.exception.ExecutorException;
@@ -12,20 +13,26 @@ import com.zoho.dpaas.comm.executor.exception.HAExecutorException;
 import com.zoho.dpaas.comm.executor.interfaces.AbstractExecutor;
 import com.zoho.dpaas.comm.executor.interfaces.Executor;
 import com.zoho.dpaas.comm.executor.job.JobType;
+import com.zoho.dpaas.comm.executor.list.ContextList;
+import com.zoho.dpaas.comm.executor.monitor.ExecutorMonitor;
+import com.zoho.dpaas.comm.executor.monitor.Monitorable;
 import com.zoho.dpaas.comm.util.DPAASCommUtil;
 import org.apache.http.client.HttpClient;
 import org.json.JSONObject;
+import org.khaleesi.carfield.tools.sparkjobserver.api.SparkJobInfo;
+import org.khaleesi.carfield.tools.sparkjobserver.api.SparkJobServerClientException;
+import org.khaleesi.carfield.tools.sparkjobserver.api.SparkMasterJobInfo;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
 
-public class SparkMaster extends AbstractExecutor {
+public class SparkMaster extends AbstractExecutor implements Monitorable {
 
+    private ContextList contextList;
     SparkRestClient client;
+    boolean isRunning;
 
     /**
      * @param sparkMasterConfig
@@ -33,9 +40,17 @@ public class SparkMaster extends AbstractExecutor {
      */
     public SparkMaster(JSONObject sparkMasterConfig) throws ExecutorConfigException {
         super(getSparkExecutorConf(sparkMasterConfig));
-        SparkClusterConfig conf = (SparkClusterConfig) getConf();
-        HttpClient httpClient = DPAASCommUtil.getHttpClient(30000);
-        client = SparkRestClient.builder().sparkVersion(conf.getSparkVersion()).httpScheme(conf.getHttpScheme()).httpClient(httpClient).masterHost(conf.getHost()).masterPort(conf.getPort()).environmentVariables(conf.getEnvironmentVariables()).build();
+        try {
+            SparkClusterConfig conf = (SparkClusterConfig) getConf();
+            HttpClient httpClient = DPAASCommUtil.getHttpClient(30000);
+            client = SparkRestClient.builder().sparkVersion(conf.getSparkVersion()).httpScheme(conf.getHttpScheme()).httpClient(httpClient).masterHost(conf.getHost()).masterPort(conf.getPort()).environmentVariables(conf.getEnvironmentVariables()).build();
+            monitor();
+            new ExecutorMonitor(this).start();
+        }
+        catch (Exception e)
+        {
+            throw new ExecutorConfigException(e);
+        }
     }
 
     /**
@@ -62,6 +77,14 @@ public class SparkMaster extends AbstractExecutor {
 
         return requiredCores<avaialbleCores;
     }
+    private String getContextForTheJob(JobType jobtype) throws ExecutorException {
+        try {
+            return contextList.getNewContext(jobtype);
+        }catch (ExecutorException e)
+        {
+            throw new ExecutorException(this,e);
+        }
+    }
 
     @Override
     public String submit(String jobType, String[] jobArgs) throws ExecutorException {
@@ -74,7 +97,7 @@ public class SparkMaster extends AbstractExecutor {
             throw new ExecutorException(this,"Insufficient Resources to execute the JobType :"+jobType);
         }
         JobSubmitRequestSpecificationImpl jobSubmit = new JobSubmitRequestSpecificationImpl(client);
-        jobSubmit.appName(conf.getAppName());
+        jobSubmit.appName(getContextForTheJob(jobTypeObj));
         jobSubmit.appResource(conf.getAppResource());
         jobSubmit.mainClass(conf.getMainClass());
         jobSubmit.appArgs(Arrays.asList(jobArgs));
@@ -121,13 +144,7 @@ public class SparkMaster extends AbstractExecutor {
 
     @Override
     public boolean isRunning(){
-        boolean toReturn=false;
-
-        try {
-            return "ALIVE".equals(getSparkClusterDetails().getStatus());
-        } catch (ExecutorException e) {
-            return false;
-        }
+       return isRunning;
     }
 
     private SparkClusterDetailsResponse getSparkClusterDetails() throws ExecutorException {
@@ -145,5 +162,39 @@ public class SparkMaster extends AbstractExecutor {
     public static void main(String[] args) throws ExecutorConfigException {
         Executor executor = new SparkCluster(new JSONObject("{\"id\":2,\"name\":\"Cluster1\",\"disabled\":false,\"type\":\"SPARK_CLUSTER\",\"jobs\":[\"datasettransformation\",\"sampleextract\",\"dsauditstatefile\",\"rawdsaudittransformation\",\"erroraudit\"],\"host\":\"192.168.230.186\",\"port\":\"6066\",\"webUIPort\":\"8090\",\"sparkVersion\":\"2.2.1\",\"mainClass\":\"com.zoho.dpaas.processor.ZDExecutor\",\"appResource\":\"\",\"clusterMode\":\"spark\",\"httpScheme\":\"http\",\"appName\":\"SparkStandAlone\",\"config\":{\"spark.driver.supervise\":\"true\",\"spark.driver.memory\":\"2g\",\"spark.driver.cores\":2,\"spark.executor.cores\":2,\"spark.executor.memory\":\"2g\",\"spark.executor.instances\":2},\"environmentVariables\":{\"SPARK_ENV_LOADED\":\"1\"}}"));
         System.out.println("c");
+    }
+
+    @Override
+    public void setIsRunning(boolean running) {
+        this.isRunning=running;
+    }
+
+    @Override
+    public void monitor() throws ExecutorException {
+        SparkClusterDetailsResponse clusterDetails = null;
+            clusterDetails = getSparkClusterDetails();
+
+            List<Context> contexts = clusterDetails.getActiveapps();
+            List<String> contextNames = new ArrayList<>();
+            List<SparkJobInfo> sparkJobInfos = new ArrayList<>();
+            for (Context context : contexts) {
+                if (context != null) {
+                    contextNames.add(context.getName());
+                }
+                SparkMasterJobInfo jobInfo = new SparkMasterJobInfo();
+                jobInfo.setContext(context.getName());
+                jobInfo.setJobId(context.getId());
+                jobInfo.setStartTime(context.getStarttime());
+                jobInfo.setStatus(context.getState());
+                jobInfo.setDuration(String.valueOf(context.getDuration().longValue()));
+                sparkJobInfos.add(jobInfo.getSparkJobInfo());
+
+            }
+            contextList = new ContextList(contextNames, sparkJobInfos);
+    }
+
+    @Override
+    public String getMonitorName() {
+        return this.getType()+getConf().getName();
     }
 }
