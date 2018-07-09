@@ -13,7 +13,9 @@ public class JobType {
     public static final String CONTEXT_CORES="num-cpu-cores";
     public static final String CONTEXT_MEMORY="memory-per-node";
     public static final String EXECUTOR_CORES="spark.executor.cores";
+    public static final String SPARK_CORES_MAX = "spark.cores.max";
     public static final String EXECUTOR_MEMORY="spark.executor.memory";
+
     private String jobType;
     private int minPool;
     private int maxPool;
@@ -32,10 +34,21 @@ public class JobType {
         return toReturn;
     }
 
-    public Map<String,String>  getParamsForExecutorCreation()
+    public Map<String,String>  getParamsForExecutorCreation(String clusterMode)
     {
         Map<String,String> toReturn=new HashMap<>();
-        toReturn.put(EXECUTOR_CORES,Integer.toString(this.getCores()));
+        switch (clusterMode.toLowerCase()){
+            case "standalone":
+            case "mesos":
+                toReturn.put(SPARK_CORES_MAX,Integer.toString(this.getCores()));
+                break;
+            case "yarn":
+                toReturn.put(EXECUTOR_CORES,Integer.toString(this.getCores()));
+                break;
+            default:
+                toReturn.put(SPARK_CORES_MAX,Integer.toString(this.getCores()));
+                break;
+        }
         toReturn.put(EXECUTOR_MEMORY,this.getMemory());
         return toReturn;
     }

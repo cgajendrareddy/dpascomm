@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Setter @Getter @JsonIgnoreProperties(ignoreUnknown = true)@ToString
 public class SparkClusterConfig extends ExecutorConfig {
@@ -14,6 +15,7 @@ public class SparkClusterConfig extends ExecutorConfig {
     private String sparkVersion;
     private String classPath;
     private String appResource;
+    private Set<String> jars;
     private String clusterMode;
     private String httpScheme;
     private String appName;

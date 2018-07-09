@@ -36,17 +36,20 @@ public class SparkMaster extends AbstractExecutor implements Monitorable {
      */
     public SparkMaster(JSONObject sparkMasterConfig) throws ExecutorConfigException {
         super(getSparkExecutorConf(sparkMasterConfig));
+
+        SparkClusterConfig conf = (SparkClusterConfig) getConf();
+        HttpClient httpClient = DPAASCommUtil.getHttpClient(30000);
+        client = SparkRestClient.builder().sparkVersion(conf.getSparkVersion()).httpScheme(conf.getHttpScheme()).httpClient(httpClient).masterHost(conf.getHost()).masterPort(conf.getPort()).environmentVariables(conf.getEnvironmentVariables()).build();
         try {
-            SparkClusterConfig conf = (SparkClusterConfig) getConf();
-            HttpClient httpClient = DPAASCommUtil.getHttpClient(30000);
-            client = SparkRestClient.builder().sparkVersion(conf.getSparkVersion()).httpScheme(conf.getHttpScheme()).httpClient(httpClient).masterHost(conf.getHost()).masterPort(conf.getPort()).environmentVariables(conf.getEnvironmentVariables()).build();
             monitor();
+        } catch (ExecutorException e) {
+            e.printStackTrace();
+        }
+        finally {
             new ExecutorMonitor(this).start();
         }
-        catch (Exception e)
-        {
-            throw new ExecutorConfigException(e);
-        }
+
+
     }
 
     /**
@@ -95,11 +98,14 @@ public class SparkMaster extends AbstractExecutor implements Monitorable {
         JobSubmitRequestSpecificationImpl jobSubmit = new JobSubmitRequestSpecificationImpl(client);
         jobSubmit.appName(getContextForTheJob(jobTypeObj));
         jobSubmit.appResource(conf.getAppResource());
+        if(conf.getJars() !=null && !conf.getJars().isEmpty()){
+            jobSubmit.usingJars(conf.getJars());
+        }
         jobSubmit.mainClass(jobTypeObj.getClassPath()!=null?jobTypeObj.getClassPath():conf.getClassPath());
         jobSubmit.appArgs(Arrays.asList(jobArgs));
         SparkPropertiesSpecification sparkPropertiesSpecification = jobSubmit.withProperties();
         //Insert ExecutorParams for executor creation
-        Map<String,String> executorParams = new HashMap<>(jobTypeObj.getParamsForExecutorCreation());
+        Map<String,String> executorParams = new HashMap<>(jobTypeObj.getParamsForExecutorCreation(conf.getClusterMode()));
         for (Map.Entry<String, String> entry : executorParams.entrySet()) {
             sparkPropertiesSpecification.put(entry.getKey(), entry.getValue());
         }
@@ -163,25 +169,24 @@ public class SparkMaster extends AbstractExecutor implements Monitorable {
     @Override
     public void monitor() throws ExecutorException {
         SparkClusterDetailsResponse clusterDetails = null;
-            clusterDetails = getSparkClusterDetails();
+        clusterDetails = getSparkClusterDetails();
 
-            List<Context> contexts = clusterDetails.getActiveapps();
-            List<String> contextNames = new ArrayList<>();
-            List<SparkJobInfo> sparkJobInfos = new ArrayList<>();
-            for (Context context : contexts) {
-                if (context != null) {
-                    contextNames.add(context.getName());
-                }
-                SparkMasterJobInfo jobInfo = new SparkMasterJobInfo();
-                jobInfo.setContext(context.getName());
-                jobInfo.setJobId(context.getId());
-                jobInfo.setStartTime(context.getStarttime());
-                jobInfo.setStatus(context.getState());
-                jobInfo.setDuration(String.valueOf(context.getDuration().longValue()));
-                sparkJobInfos.add(jobInfo.getSparkJobInfo());
-
+        List<Context> contexts = clusterDetails.getActiveapps();
+        List<String> contextNames = new ArrayList<>();
+        List<SparkJobInfo> sparkJobInfos = new ArrayList<>();
+        for (Context context : contexts) {
+            if (context != null) {
+                contextNames.add(context.getName());
             }
-            contextList = new ContextList(contextNames, sparkJobInfos);
+            SparkMasterJobInfo jobInfo = new SparkMasterJobInfo();
+            jobInfo.setContext(context.getName());
+            jobInfo.setJobId(context.getId());
+            jobInfo.setStartTime(context.getStarttime());
+            jobInfo.setStatus(context.getState());
+            jobInfo.setDuration(String.valueOf(context.getDuration().longValue()));
+            sparkJobInfos.add(jobInfo.getSparkJobInfo());
+        }
+        contextList = new ContextList(contextNames, sparkJobInfos);
     }
 
     @Override

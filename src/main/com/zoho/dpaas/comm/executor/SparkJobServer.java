@@ -38,15 +38,16 @@ public class SparkJobServer extends AbstractExecutor implements Monitorable {
      */
     public SparkJobServer(JSONObject executorConf) throws ExecutorConfigException {
         super(getSJSExecutorConf(executorConf));
-        try {
         sparkClusterExecutor=getSparkClusterExecutor(getConf());
         client = new SparkJobServerClient(((SJSConfig)getConf()).getSjsURL());
+        try {
             monitor();
-            new ExecutorMonitor(this).start();
+        } catch (ExecutorException e) {
+            e.printStackTrace();
         }
-        catch (Exception e)
-        {
-            throw new ExecutorConfigException(e);
+        finally {
+            new ExecutorMonitor(this).start();
+
         }
 
     }
@@ -99,7 +100,7 @@ public class SparkJobServer extends AbstractExecutor implements Monitorable {
             toReturn = contextList.getExistingAvailableContext(jobtype);
             if (toReturn == null || toReturn.isEmpty()) {
                 toReturn = contextList.getNewContext(jobtype);
-                HashMap<String,String> params = new HashMap<>(jobtype.getParamsForExecutorCreation());
+                HashMap<String,String> params = new HashMap<>(jobtype.getParamsForExecutorCreation(""));
                 String contextFactory =((SJSConfig)getConf()).getContextFactory();
                 if(contextFactory != null){
                     params.put("context-factory",contextFactory);

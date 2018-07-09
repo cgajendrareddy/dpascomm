@@ -49,9 +49,9 @@ public class ContextList {
         return null;
     }
     public String getNewContext(JobType jobType) throws ExecutorException {
-        int minPoolSize=jobType.getMinPool();
+        int maxPoolSize=jobType.getMaxPool();
         int currentPoolSize=(jobTypeContextMap.containsKey(jobType.getJobType()))?jobTypeContextMap.get(jobType.getJobType()).size():0;
-        if(currentPoolSize<minPoolSize)
+        if(currentPoolSize<maxPoolSize)
         {
             return getNewContextName(jobType);
         }
