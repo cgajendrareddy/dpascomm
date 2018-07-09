@@ -7,40 +7,40 @@
       "type": "LOCAL_SPARK",
       "priority": 2,
       "jobTypes": {
-        "sampletransformation": {
-          "jobType": "sampletransformation",
-          "minPool": 2,
-          "maxPool": 3
-        },
         "datasettransformation": {
           "jobType": "datasettransformation",
           "minPool": 2,
-          "maxPool": 3
+          "maxPool": 3,
+          "cores": 2,
+          "memory": "2G"
         },
         "sampleextract": {
           "jobType": "sampleextract",
           "minPool": 2,
-          "maxPool": 3
+          "maxPool": 3,
+          "cores": 2,
+          "memory": "2G"
         },
         "dsauditstatefile": {
           "jobType": "dsauditstatefile",
           "minPool": 2,
-          "maxPool": 3
+          "maxPool": 3,
+          "cores": 2,
+          "memory": "2g"
         },
         "rawdsaudittransformation": {
           "jobType": "rawdsaudittransformation",
           "minPool": 2,
-          "maxPool": 3
-        },
-        "samplepreview": {
-          "jobType": "samplepreview",
-          "minPool": 2,
-          "maxPool": 3
+          "maxPool": 3,
+          "cores": 2,
+          "memory": "2G"
         },
         "erroraudit": {
           "jobType": "erroraudit",
           "minPool": 2,
-          "maxPool": 3
+          "maxPool": 3,
+          "cores": 2,
+          "memory": "2G"
         }
       },
       "className": "com.zoho.dpaas.comm.executor.LocalSpark"
@@ -132,59 +132,85 @@
         "appName":"snap"
       },
       "jobTypes": {
-        "sampletransformation": {
-          "jobType": "sampletransformation",
-          "minPool": 2,
-          "maxPool": 3
-        },
         "datasettransformation": {
           "jobType": "datasettransformation",
           "minPool": 2,
-          "maxPool": 3
+          "maxPool": 3,
+          "cores": 2,
+          "memory": "2G"
         },
         "sampleextract": {
           "jobType": "sampleextract",
           "minPool": 2,
-          "maxPool": 3
+          "maxPool": 3,
+          "cores": 2,
+          "memory": "2G"
         },
         "dsauditstatefile": {
           "jobType": "dsauditstatefile",
           "minPool": 2,
-          "maxPool": 3
+          "maxPool": 3,
+          "cores": 2,
+          "memory": "2g"
         },
         "rawdsaudittransformation": {
           "jobType": "rawdsaudittransformation",
           "minPool": 2,
-          "maxPool": 3
-        },
-        "samplepreview": {
-          "jobType": "samplepreview",
-          "minPool": 2,
-          "maxPool": 3
+          "maxPool": 3,
+          "cores": 2,
+          "memory": "2G"
         },
         "erroraudit": {
           "jobType": "erroraudit",
           "minPool": 2,
-          "maxPool": 3
+          "maxPool": 3,
+          "cores": 2,
+          "memory": "2G"
         }
       }
-    }
-  ],
-  "HAExecutors": [
+    },
     {
       "id": 5,
       "name": "SJS_HA1",
       "disabled": true,
       "type": "SPARK_SJS",
-      "jobs": [
-        "sampletransformation",
-        "datasettransformation",
-        "sampleextract",
-        "dsauditstatefile",
-        "rawdsaudittransformation",
-        "samplepreview",
-        "erroraudit"
-      ],
+      "jobTypes": {
+        "datasettransformation": {
+          "jobType": "datasettransformation",
+          "minPool": 2,
+          "maxPool": 3,
+          "cores": 2,
+          "memory": "2G"
+        },
+        "sampleextract": {
+          "jobType": "sampleextract",
+          "minPool": 2,
+          "maxPool": 3,
+          "cores": 2,
+          "memory": "2G"
+        },
+        "dsauditstatefile": {
+          "jobType": "dsauditstatefile",
+          "minPool": 2,
+          "maxPool": 3,
+          "cores": 2,
+          "memory": "2g"
+        },
+        "rawdsaudittransformation": {
+          "jobType": "rawdsaudittransformation",
+          "minPool": 2,
+          "maxPool": 3,
+          "cores": 2,
+          "memory": "2G"
+        },
+        "erroraudit": {
+          "jobType": "erroraudit",
+          "minPool": 2,
+          "maxPool": 3,
+          "cores": 2,
+          "memory": "2G"
+        }
+      },
       "ids": [
         2,
         3
