@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Setter@Getter @ToString
-public class JobType  extends ExecutorConstants {
+public class JobType  {
     private String jobType;
     private int minPool;
     private int maxPool;

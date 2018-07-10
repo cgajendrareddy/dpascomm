@@ -1,6 +1,5 @@
 package com.zoho.dpaas.comm.executor.list;
 
-import com.zoho.dpaas.comm.executor.constants.ExecutorConstants;
 import com.zoho.dpaas.comm.executor.job.JobType;
 import org.khaleesi.carfield.tools.sparkjobserver.api.SparkJobInfo;
 
@@ -9,7 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JobList extends ExecutorConstants {
+import static com.zoho.dpaas.comm.executor.constants.ExecutorConstants.INFO_STATUS_RUNNING;
+
+public class JobList {
     private final List<SparkJobInfo> jobs;
     private final Map<String,Map<String,List<SparkJobInfo>>> jobsMap;
     public JobList(List<SparkJobInfo> sparkJobInfo)

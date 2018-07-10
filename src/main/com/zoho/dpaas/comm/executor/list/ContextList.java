@@ -1,6 +1,5 @@
 package com.zoho.dpaas.comm.executor.list;
 
-import com.zoho.dpaas.comm.executor.constants.ExecutorConstants;
 import com.zoho.dpaas.comm.executor.exception.ExecutorException;
 import com.zoho.dpaas.comm.executor.job.JobType;
 import org.khaleesi.carfield.tools.sparkjobserver.api.SparkJobInfo;
@@ -10,8 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.zoho.dpaas.comm.executor.constants.ExecutorConstants.JOBTYPESEPERATOR;
 
-public class ContextList extends ExecutorConstants {
+
+public class ContextList {
     private final JobList jobList;
     private final Map<String,List<String>> jobTypeContextMap;
     final List<String> contexts;

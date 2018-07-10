@@ -2,7 +2,6 @@ package com.zoho.dpaas.comm.executor.factory;
 
 import com.zoho.dpaas.comm.executor.SparkCluster;
 import com.zoho.dpaas.comm.executor.SparkJobServer;
-import com.zoho.dpaas.comm.executor.constants.ExecutorConstants;
 import com.zoho.dpaas.comm.executor.exception.ExecutorConfigException;
 import com.zoho.dpaas.comm.executor.exception.ExecutorException;
 import com.zoho.dpaas.comm.executor.interfaces.Executor;
@@ -14,7 +13,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ExecutorFactory extends ExecutorConstants {
+import static com.zoho.dpaas.comm.executor.constants.ExecutorConstants.*;
+
+public class ExecutorFactory {
     private static ExecutorConfigProvider executorConfigProvider;
     private static ExecutorsList executorsList;
 
