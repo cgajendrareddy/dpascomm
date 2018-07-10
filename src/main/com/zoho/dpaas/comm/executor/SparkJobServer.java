@@ -143,7 +143,7 @@ public class SparkJobServer extends AbstractExecutor implements Monitorable {
         if(jobTypeObj == null){
             throw new ExecutorException(this," Invalid JobType "+jobType+" for executor Id "+this.getId());//No I18N
         }
-        if(isResourcesAvailableFortheJob(jobType)){
+        if(!isResourcesAvailableFortheJob(jobType)){
             throw new ExecutorException(this," Resources Not Available for executing the Job "+jobType);//No I18N
         }
         String contextName=getContextForTheJob(jobTypeObj);
