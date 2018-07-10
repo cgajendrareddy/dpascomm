@@ -1,5 +1,6 @@
 package com.zoho.dpaas.comm.executor.job;
 
+import com.zoho.dpaas.comm.executor.constants.ExecutorConstants;
 import com.zoho.dpaas.comm.executor.exception.ExecutorException;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,13 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Setter@Getter @ToString
-public class JobType {
-    public static final String CONTEXT_CORES="num-cpu-cores";//No I18N
-    public static final String CONTEXT_MEMORY="memory-per-node";//No I18N
-    public static final String EXECUTOR_CORES="spark.executor.cores";//No I18N
-    public static final String SPARK_CORES_MAX = "spark.cores.max";//No I18N
-    public static final String EXECUTOR_MEMORY="spark.executor.memory";//No I18N
-
+public class JobType  extends ExecutorConstants {
     private String jobType;
     private int minPool;
     private int maxPool;

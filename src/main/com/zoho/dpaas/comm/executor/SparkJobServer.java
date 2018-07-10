@@ -1,3 +1,4 @@
+//$Id$
 package com.zoho.dpaas.comm.executor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,15 +22,15 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.zoho.dpaas.comm.executor.constants.ExecutorConstants.*;
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
 
+/**
+ *
+ * Created by naga-6803 on 7/7/2018.
+ *
+ */
 public class SparkJobServer extends AbstractExecutor implements Monitorable {
-
-    public static final String CONTEXTFACTORY ="context-factory";//No I18N
-    public static final String CONTEXT="context";//No I18N
-    public static final String INPUT_DATA_ENCODING="UTF-8";//No I18N
-    public static final String SPARK_INPUT="input=";//No I18N
-    public static final String CLASSPATH = "classPath";//No I18N
 
     /**
      * spark cluster for the SJS.

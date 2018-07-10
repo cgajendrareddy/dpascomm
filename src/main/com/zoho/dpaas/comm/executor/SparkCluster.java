@@ -13,9 +13,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.zoho.dpaas.comm.executor.constants.ExecutorConstants.MASTERS;
+
 public class SparkCluster extends HAExecutor {
 
-    public static final String MASTERS = "masters";//No I18N
     /**
      * @param sparkClusterConfig
      * @throws ExecutorConfigException
