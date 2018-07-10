@@ -1,6 +1,5 @@
 package com.zoho.dpaas.comm.executor.job;
 
-import com.zoho.dpaas.comm.executor.constants.ExecutorConstants;
 import com.zoho.dpaas.comm.executor.exception.ExecutorException;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +7,8 @@ import lombok.ToString;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.zoho.dpaas.comm.executor.constants.ExecutorConstants.*;
 
 @Setter@Getter @ToString
 public class JobType  {
