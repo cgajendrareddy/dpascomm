@@ -11,17 +11,17 @@ import org.apache.http.params.HttpParams;
 public class DPAASCommUtil {
 
     public enum JobState {
-        SUBMITTED("INPROGRESS"),
-        RUNNING("INPROGRESS"),
-        FINISHED("SUCCESS"),
-        RELAUNCHING("INPROGRESS"),
-        UNKNOWN("FAILED"),
-        KILLED("KILLED"),
-        FAILED("FAILED"),
-        ERROR("FAILED"),
-        QUEUED("INPROGRESS"),
-        RETRYING("INPROGRESS"),
-        NOT_FOUND("FAILED");
+        SUBMITTED("INPROGRESS"),//No I18N
+        RUNNING("INPROGRESS"),//No I18N
+        FINISHED("SUCCESS"),//No I18N
+        RELAUNCHING("INPROGRESS"),//No I18N
+        UNKNOWN("FAILED"),//No I18N
+        KILLED("KILLED"),//No I18N
+        FAILED("FAILED"),//No I18N
+        ERROR("FAILED"),//No I18N
+        QUEUED("INPROGRESS"),//No I18N
+        RETRYING("INPROGRESS"),//No I18N
+        NOT_FOUND("FAILED");//No I18N
 
         JobState(String failed) {
         }
@@ -37,7 +37,7 @@ public class DPAASCommUtil {
      */
     public static org.apache.http.client.HttpClient getHttpClient(int timeout){
         org.apache.http.client.HttpClient httpClient = new DefaultHttpClient();
-        HttpParams httpParams = httpClient.getParams().setParameter("http.connection.timeout", new Integer(timeout));
+        HttpParams httpParams = httpClient.getParams().setParameter("http.connection.timeout", new Integer(timeout));//No I18N
         ((DefaultHttpClient) httpClient).setParams(httpParams);
         return httpClient;
     }
@@ -48,7 +48,7 @@ public class DPAASCommUtil {
      * @param timeout
      */
     public static void addTimeOutParameter(org.apache.http.client.HttpClient client,int timeout){
-        HttpParams httpParams = client.getParams().setParameter("http.connection.timeout", new Integer(timeout));
+        HttpParams httpParams = client.getParams().setParameter("http.connection.timeout", new Integer(timeout));//No I18N
         ((DefaultHttpClient) client).setParams(httpParams);
     }
 }

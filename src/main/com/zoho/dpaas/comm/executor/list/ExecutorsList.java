@@ -17,11 +17,23 @@ public class ExecutorsList {
     {
         this.executors=executors;
     }
+
+    /**
+     * Get Executor For JobId
+     * @param id
+     * @return
+     */
     public Executor getExecutor(int id)
     {
         return executors.get(id);
     }
 
+    /**
+     * Get Executor For JobType
+     * @param jobType
+     * @return
+     * @throws ExecutorException
+     */
     public Executor getExecutor(String jobType) throws ExecutorException {
         Set<Executor> executorSet=getExecutors(jobType);
         for(Executor executor: executorSet)
@@ -29,10 +41,15 @@ public class ExecutorsList {
             if(executor.isEnabled() && executor.isRunning() && executor.isResourcesAvailableFortheJob(jobType))
             return executor;
         }
-        throw new ExecutorException(null,"No Executors are ready to do the job "+jobType);
+        throw new ExecutorException(null,"No Executors are ready to do the job "+jobType);//No I18N
 
     }
 
+    /**
+     * Get All Executors for JobType
+     * @param jobType
+     * @return
+     */
     private Set<Executor> getExecutors(String jobType)
     {
        Set<Executor> toReturn=new TreeSet<>(new Comparator<Executor>(){

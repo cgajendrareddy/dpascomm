@@ -14,11 +14,11 @@ public class SparkClusterDetailsSpecificationImpl implements SparkClusterDetails
 
     @Override
     public SparkClusterDetailsResponse getSparkClusterDetails() throws FailedSparkRequestException {
-        String url = this.sparkRestClient.getHttpScheme() + "://" + this.sparkRestClient.getMasterUrl() + "/json/" ;
+        String url = this.sparkRestClient.getHttpScheme() + "://" + this.sparkRestClient.getMasterUrl() + "/json/" ;//No I18N
         SparkClusterDetailsResponse response = HttpRequestUtil.executeHttpMethodAndGetResponse(this.sparkRestClient.getClient(), new HttpGet(url), SparkClusterDetailsResponse.class);
         
         if (response == null) {
-            throw new FailedSparkRequestException("get Cluster details was not successful."+ response);
+            throw new FailedSparkRequestException("get Cluster details was not successful."+ response);//No I18N
         } else {
             return response;
         }

@@ -15,9 +15,14 @@ public class SJSConfig extends ExecutorConfig {
     private Integer sparkClusterId;
     private Map<String,String> config;
     private String classPath;
-    @JsonProperty(value = "context-factory")
+    @JsonProperty(value = "context-factory")//No I18N
     private String contextFactory;
 
+    /**
+     * Add configurations to config Map
+     * @param configName
+     * @param configValue
+     */
     public void addConfig(String configName,String configValue){
         if(this.config == null){
             this.config = new HashMap<>(5);

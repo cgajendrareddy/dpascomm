@@ -16,6 +16,12 @@ public class SparkJobServerClient extends SparkJobServerClientImpl {
         this.jobServerUrl = jobServerUrl;
     }
 
+    /**
+     * Method to killJob
+     * @param jobId
+     * @return
+     * @throws SparkJobServerClientException
+     */
     public boolean killJob(String jobId) throws SparkJobServerClientException {
         ISparkJobServerClient client = SparkJobServerClientFactory.getInstance().createSparkJobServerClient(this.jobServerUrl);
         final CloseableHttpClient httpClient = new DefaultHttpClient();
@@ -23,10 +29,10 @@ public class SparkJobServerClient extends SparkJobServerClientImpl {
         try {
             //TODO add a check for the validation of contextName naming
             if (!isNotEmpty(jobId)) {
-                throw new SparkJobServerClientException("The given JobId is null or empty.");
+                throw new SparkJobServerClientException("The given JobId is null or empty.");//No I18N
             }
             StringBuffer postUrlBuff = new StringBuffer(this.jobServerUrl);
-            postUrlBuff.append("jobs/").append(jobId);
+            postUrlBuff.append("jobs/").append(jobId);//No I18N
 
             HttpDelete deleteMethod = new HttpDelete(postUrlBuff.toString());
             HttpResponse response = httpClient.execute(deleteMethod);
@@ -35,15 +41,15 @@ public class SparkJobServerClient extends SparkJobServerClientImpl {
             if (statusCode == HttpStatus.SC_OK) {
                 return true;
             } else {
-                throw new SparkJobServerClientException("status code : "+statusCode+" response : "+resContent);
+                throw new SparkJobServerClientException("status code : "+statusCode+" response : "+resContent);//No I18N
             }
         } catch (Exception e) {
-            processException("Error occurs when trying to delete the target job:", e);
+            processException("Error occurs when trying to delete the target job:", e);//No I18N
         } finally {
             try {
                 httpClient.close();
             } catch (IOException e) {
-                throw new SparkJobServerClientException("Client Connection exception");
+                throw new SparkJobServerClientException("Client Connection exception");//No I18N
             }
         }
         return false;

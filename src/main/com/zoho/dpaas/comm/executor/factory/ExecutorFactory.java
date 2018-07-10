@@ -16,10 +16,12 @@ import java.util.Map;
 import static com.zoho.dpaas.comm.util.DPAASCommUtil.ExecutorType;
 
 public class ExecutorFactory {
-    public static final String EXECUTOR_CONFIG_PROVIDER_SYSPROP_KEY="dpaas.comm.executor.config.provider";
-    public static final String EXECUTOR_TYPE="type";
-    public static final String EXECUTOR_CLASS_NAME = "className";
-    public static final String EXECUTOR_CONFIG_CLASS_NAME = "configClassName";
+    public static final String EXECUTOR_CONFIG_PROVIDER_SYSPROP_KEY="dpaas.comm.executor.config.provider";//No I18N
+    public static final String EXECUTOR_TYPE="type";//No I18N
+    public static final String EXECUTOR_CLASS_NAME = "className";//No I18N
+    public static final String EXECUTOR_CONFIG_CLASS_NAME = "configClassName";//No I18N
+    public static final String EXECUTORS = "executors";//No I18N
+    public static final String DISABLED = "disabled";//No I18N
     private static ExecutorConfigProvider executorConfigProvider;
     private static ExecutorsList executorsList;
 
@@ -64,15 +66,15 @@ public class ExecutorFactory {
 
     private static void initializeExecutors() throws ExecutorConfigException {
         JSONObject executorsConfig = getExecutorConfigProvider().getExecutorConfigs();
-        JSONArray executors = executorsConfig.optJSONArray("executors");
+        JSONArray executors = executorsConfig.optJSONArray(EXECUTORS);
         Map<Integer,Executor> executorMap = new HashMap<>();
         for(int i=0;i<executors.length();i++){
             JSONObject executorJSON = executors.optJSONObject(i);
             try {
-                if (executorJSON != null && !executorJSON.optBoolean("disabled")) {
+                if (executorJSON != null && !executorJSON.optBoolean(DISABLED)) {
                     Executor executor = getExecutor(executorJSON);
                     if (executorMap.get(executor.getId()) != null) {
-                        throw new ExecutorConfigException(" executor Id " + executor.getId() + " should be duplicated");
+                        throw new ExecutorConfigException(" executor Id " + executor.getId() + " should be duplicated");//No I18N
                     }
                     executorMap.put(executor.getId(), executor);
                 }
@@ -88,7 +90,7 @@ public class ExecutorFactory {
         if(executorConfigProvider==null) {
             String executorConfigProviderClass = System.getProperty(EXECUTOR_CONFIG_PROVIDER_SYSPROP_KEY);
             if (executorConfigProviderClass == null) {
-                throw new ExecutorConfigException("System property missing: " + EXECUTOR_CONFIG_PROVIDER_SYSPROP_KEY);
+                throw new ExecutorConfigException("System property missing: " + EXECUTOR_CONFIG_PROVIDER_SYSPROP_KEY);//No I18N
             }
             try {
                 Class c = Class.forName(executorConfigProviderClass);

@@ -1,7 +1,9 @@
 package org.khaleesi.carfield.tools.sparkjobserver.api;
 
 public class SparkMasterJobInfo {
+
     SparkJobInfo sparkJobInfo =new SparkJobInfo();
+
     public SparkJobInfo getSparkJobInfo() {
         return sparkJobInfo;
     }

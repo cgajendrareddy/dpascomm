@@ -25,6 +25,12 @@ import static com.zoho.dpaas.comm.util.DPAASCommUtil.JobState;
 
 public class SparkJobServer extends AbstractExecutor implements Monitorable {
 
+    public static final String CONTEXTFACTORY ="context-factory";//No I18N
+    public static final String CONTEXT="context";//No I18N
+    public static final String INPUT_DATA_ENCODING="UTF-8";//No I18N
+    public static final String SPARK_INPUT="input=";//No I18N
+    public static final String CLASSPATH = "classPath";//No I18N
+
     /**
      * spark cluster for the SJS.
      */
@@ -62,7 +68,7 @@ public class SparkJobServer extends AbstractExecutor implements Monitorable {
             return new ObjectMapper().readValue(executorConf.toString(),SJSConfig.class);
 
         } catch (Exception e){
-            throw new ExecutorConfigException("Unable to initialize SparkCluster Conf",e);
+            throw new ExecutorConfigException("Unable to initialize SparkCluster Conf",e);//No I18N
         }
     }
 
@@ -78,14 +84,14 @@ public class SparkJobServer extends AbstractExecutor implements Monitorable {
 
     @Override
     public boolean isResourcesAvailableFortheJob(String jobType) throws ExecutorException {
-        String existingContext = contextList.getExistingAvailableContext(((SJSConfig) getConf()).getJobTypes().get(jobType));
+        String existingContext = contextList.getExistingAvailableContext(getConf().getJobTypes().get(jobType));
         if(existingContext!=null && !existingContext.isEmpty())
         {
             return true;
         }
         else
         {
-            String newContext=contextList.getNewContext(((SJSConfig) getConf()).getJobTypes().get(jobType));
+            String newContext=contextList.getNewContext(getConf().getJobTypes().get(jobType));
             if(newContext!=null && !newContext.isEmpty())
             {
                 return true;
@@ -94,6 +100,13 @@ public class SparkJobServer extends AbstractExecutor implements Monitorable {
         return false;
 
     }
+
+    /**
+     * Get Context for the specified JobType
+     * @param jobtype
+     * @return
+     * @throws ExecutorException
+     */
     private String getContextForTheJob(JobType jobtype) throws ExecutorException {
         try {
             String toReturn;
@@ -103,7 +116,7 @@ public class SparkJobServer extends AbstractExecutor implements Monitorable {
                 HashMap<String,String> params = new HashMap<>(jobtype.getParamsForExecutorCreation(""));
                 String contextFactory =((SJSConfig)getConf()).getContextFactory();
                 if(contextFactory != null){
-                    params.put("context-factory",contextFactory);
+                    params.put(CONTEXTFACTORY,contextFactory);
                 }
                 try {
                     client.createContext(toReturn,params);
@@ -127,28 +140,28 @@ public class SparkJobServer extends AbstractExecutor implements Monitorable {
         Map<String,String> jobConf=new HashMap<String,String>(conf.getConfig());
         JobType jobTypeObj = conf.getJobTypes().get(jobType);
         if(jobTypeObj == null){
-            throw new ExecutorException(this," Invalid JobType "+jobType+" for executor Id "+this.getId());
+            throw new ExecutorException(this," Invalid JobType "+jobType+" for executor Id "+this.getId());//No I18N
         }
         if(isResourcesAvailableFortheJob(jobType)){
-            throw new ExecutorException(this," Resources Not Available for executing the Job "+jobType);
+            throw new ExecutorException(this," Resources Not Available for executing the Job "+jobType);//No I18N
         }
         String contextName=getContextForTheJob(jobTypeObj);
-        jobConf.put("context",contextName);
-        jobConf.put("classPath",jobTypeObj.getClassPath()!=null?jobTypeObj.getClassPath():conf.getClassPath());
+        jobConf.put(CONTEXT,contextName);
+        jobConf.put(CLASSPATH,jobTypeObj.getClassPath()!=null?jobTypeObj.getClassPath():conf.getClassPath());
         try{
-            String data="input=\"";
+            String data=SPARK_INPUT+"\"";
             try {
                 for(int i=0;i<jobArgs.length;i++){
-                    data+= URLEncoder.encode("\""+jobArgs[i]+"\"","UTF-8")+" ";
+                    data+= URLEncoder.encode("\""+jobArgs[i]+"\"",INPUT_DATA_ENCODING)+" ";//No I18N
                 }
                 data+="\"";
             } catch (UnsupportedEncodingException e) {
-                throw new ExecutorException(this,"Encoding error");
+                throw new ExecutorException(this,"Encoding error");//No I18N
             }
             SparkJobResult result = client.startJob(data,jobConf);
             return result.getJobId();
         } catch (SparkJobServerClientException e) {
-            throw new ExecutorException(this,"Job Submit Failed. Message : "+e.getMessage(),e);
+            throw new ExecutorException(this,"Job Submit Failed. Message : "+e.getMessage(),e);//No I18N
         }
 
     }
@@ -158,7 +171,7 @@ public class SparkJobServer extends AbstractExecutor implements Monitorable {
         try {
             return client.killJob(jobId);
         } catch (SparkJobServerClientException e) {
-            throw new ExecutorException(this,"Unable to kill Job. Message :"+e.getMessage(),e);
+            throw new ExecutorException(this,"Unable to kill Job. Message :"+e.getMessage(),e);//No I18N
         }
     }
 
@@ -168,7 +181,7 @@ public class SparkJobServer extends AbstractExecutor implements Monitorable {
             SparkJobResult response = client.getJobResult(jobId);
             return JobState.valueOf(response.getStatus());
         } catch (SparkJobServerClientException e) {
-            throw new ExecutorException(this,"Error in getting JobStatus. Message : "+e.getMessage(),e);
+            throw new ExecutorException(this,"Error in getting JobStatus. Message : "+e.getMessage(),e);//No I18N
         }
     }
 

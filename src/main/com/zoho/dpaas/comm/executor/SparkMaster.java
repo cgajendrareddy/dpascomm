@@ -61,7 +61,7 @@ public class SparkMaster extends AbstractExecutor implements Monitorable {
         try {
             return new ObjectMapper().readValue(sparkMasterConfig.toString(),SparkClusterConfig.class);
         } catch (IOException e){
-            throw new ExecutorConfigException("Unable to initialize SparkCluster Conf",e);
+            throw new ExecutorConfigException("Unable to initialize SparkCluster Conf",e);//No I18N
         }
     }
 
@@ -70,12 +70,19 @@ public class SparkMaster extends AbstractExecutor implements Monitorable {
         SparkClusterDetailsResponse clusterDetails=getSparkClusterDetails();
         int avaialbleCores=clusterDetails.getCores()-clusterDetails.getCoresused();
         if(getConf().getJobTypes().get(jobType) == null){
-            throw new ExecutorException(this,"Job Type "+jobType+" not found in the executors supported JobTypes");
+            throw new ExecutorException(this,"Job Type "+jobType+" not found in the executors supported JobTypes");//No I18N
         }
         int requiredCores = getConf().getJobTypes().get(jobType).getCores();
 
         return requiredCores<avaialbleCores;
     }
+
+    /**
+     * Get Context for specified JobType
+     * @param jobtype
+     * @return
+     * @throws ExecutorException
+     */
     private String getContextForTheJob(JobType jobtype) throws ExecutorException {
         try {
             return contextList.getNewContext(jobtype);
@@ -90,10 +97,10 @@ public class SparkMaster extends AbstractExecutor implements Monitorable {
         SparkClusterConfig conf = (SparkClusterConfig) getConf();
         JobType jobTypeObj =getConf().getJobTypes().get(jobType);
         if(jobTypeObj == null){
-            throw new ExecutorException(this,"Unsupported Job Type "+jobType);
+            throw new ExecutorException(this,"Unsupported Job Type "+jobType);//No I18N
         }
         if(!isResourcesAvailableFortheJob(jobType)){
-            throw new ExecutorException(this,"Insufficient Resources to execute the JobType :"+jobType);
+            throw new ExecutorException(this,"Insufficient Resources to execute the JobType :"+jobType);//No I18N
         }
         JobSubmitRequestSpecificationImpl jobSubmit = new JobSubmitRequestSpecificationImpl(client);
         jobSubmit.appName(getContextForTheJob(jobTypeObj));
@@ -119,7 +126,7 @@ public class SparkMaster extends AbstractExecutor implements Monitorable {
 
             return jobSubmit.submit();
         } catch (FailedSparkRequestException e) {
-            throw new ExecutorException(this,"JOB Failed. Message : "+e.getMessage(),e);
+            throw new ExecutorException(this,"JOB Failed. Message : "+e.getMessage(),e);//No I18N
         }
     }
 
@@ -130,7 +137,7 @@ public class SparkMaster extends AbstractExecutor implements Monitorable {
         try {
             return killJobRequestSpecification.withSubmissionId(jobId);
         }catch (FailedSparkRequestException e){
-            throw new ExecutorException(this,"Kill Job Request Failed. Message:  "+e.getMessage(),e);
+            throw new ExecutorException(this,"Kill Job Request Failed. Message:  "+e.getMessage(),e);//No I18N
         }
     }
 
@@ -140,7 +147,7 @@ public class SparkMaster extends AbstractExecutor implements Monitorable {
         try{
             return JobState.valueOf(jobStatusRequestSpecification.withSubmissionId(jobId).name());
         } catch (FailedSparkRequestException e) {
-            throw new ExecutorException(this,"Unable to get Job Status. Message : "+e.getMessage(),e);
+            throw new ExecutorException(this,"Unable to get Job Status. Message : "+e.getMessage(),e);//No I18N
         }
     }
 
@@ -149,6 +156,11 @@ public class SparkMaster extends AbstractExecutor implements Monitorable {
        return isRunning;
     }
 
+    /**
+     * Get Spark Cluster Details
+     * @return
+     * @throws ExecutorException
+     */
     private SparkClusterDetailsResponse getSparkClusterDetails() throws ExecutorException {
         try {
             HttpClient httpClient = DPAASCommUtil.getHttpClient(30000);

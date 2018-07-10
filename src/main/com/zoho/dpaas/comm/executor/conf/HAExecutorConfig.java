@@ -10,6 +10,6 @@ import java.util.List;
 
 @Setter @Getter @JsonIgnoreProperties(ignoreUnknown = true)@ToString
 public class HAExecutorConfig extends ExecutorConfig {
-    @JsonProperty(value = "ids")
+    @JsonProperty(value = "ids")//No I18N
     private List<Integer> ids;
 }

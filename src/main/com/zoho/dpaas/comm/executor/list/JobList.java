@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class JobList {
 
-    public static final String INFO_STATUS_RUNNING = "RUNNING";
+    public static final String INFO_STATUS_RUNNING = "RUNNING";//No I18N
     private final List<SparkJobInfo> jobs;
     private final Map<String,Map<String,List<SparkJobInfo>>> jobsMap;
     public JobList(List<SparkJobInfo> sparkJobInfo)
@@ -19,6 +19,10 @@ public class JobList {
         this.jobsMap=getContextVsJobsMap();
     }
 
+    /**
+     * Get Map of Context and SparkJob
+     * @return
+     */
     private Map<String,Map<String,List<SparkJobInfo>>>  getContextVsJobsMap()
     {
         Map<String,Map<String,List<SparkJobInfo>>> toReturn=new HashMap<>();
@@ -46,6 +50,12 @@ public class JobList {
        return toReturn;
     }
 
+    /**
+     * Get Avaliable Contexts for The JobType
+     * @param contexts
+     * @param jobTypeObj
+     * @return
+     */
     public List<String> getAvailableContexstForJob(List<String> contexts, JobType jobTypeObj)
     {
         List<String> toReturn=new ArrayList<>();
@@ -64,6 +74,13 @@ public class JobList {
 
         return toReturn;
     }
+
+    /**
+     * Get Jobs with specified context name
+     * @param contextName
+     * @param jobStatus
+     * @return
+     */
     public List<SparkJobInfo> getJobsOfContext(String contextName,String jobStatus)
     {
         List<SparkJobInfo> toReturn=null;

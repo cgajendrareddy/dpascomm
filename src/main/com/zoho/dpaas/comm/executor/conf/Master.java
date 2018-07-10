@@ -14,10 +14,10 @@ public class Master {
 
     @Override
     public String toString() {
-        return "{" +
-                "host:'" + host + '\'' +
-                ", port:" + port +
-                ", webUIPort:" + webUIPort +
-                '}';
+        return "{" +//No I18N
+                "host:'" + host + '\'' +//No I18N
+                ", port:" + port +//No I18N
+                ", webUIPort:" + webUIPort +//No I18N
+                '}';//No I18N
     }
 }

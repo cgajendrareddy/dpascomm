@@ -64,7 +64,7 @@ public class HAExecutor extends AbstractExecutor {
     public boolean isResourcesAvailableFortheJob(String jobType) throws ExecutorException {
         try {
             if(currentActiveExecutor == null){
-                throw new ExecutorException(this,"Invalid Executor");
+                throw new ExecutorException(this,"Invalid Executor");//No I18N
             }
             return currentActiveExecutor.isResourcesAvailableFortheJob(jobType);
         }
@@ -164,7 +164,7 @@ public class HAExecutor extends AbstractExecutor {
         try {
             return new ObjectMapper().readValue(executorConf.toString(),HAExecutorConfig.class);
         } catch (IOException e){
-            throw new ExecutorConfigException("Unable to initialize SparkCluster Conf",e);
+            throw new ExecutorConfigException("Unable to initialize SparkCluster Conf",e);//No I18N
         }
     }
 
@@ -183,6 +183,11 @@ public class HAExecutor extends AbstractExecutor {
         }
         return executors;
     }
+
+    /**
+     * find Current Active executor from list of Executors
+     * @throws HAExecutorException
+     */
     private void findCurrentActiveExecutor() throws HAExecutorException {
         boolean isSuccess = false;
         for(Executor executor:executorsList)
@@ -195,7 +200,7 @@ public class HAExecutor extends AbstractExecutor {
             }
         }
         if(!isSuccess){
-            throw new HAExecutorException(this,"Failed with all the Executors.");
+            throw new HAExecutorException(this,"Failed with all the Executors.");//No I18N
         }
     }
 

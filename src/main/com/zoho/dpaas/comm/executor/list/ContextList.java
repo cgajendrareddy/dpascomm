@@ -14,8 +14,8 @@ public class ContextList {
     private final JobList jobList;
     private final Map<String,List<String>> jobTypeContextMap;
     final List<String> contexts;
-    public static final String jobTypeSeperator="@";
-    public static final String INFO_STATUS_RUNNING = "RUNNING";
+    public static final String JOBTYPESEPERATOR ="@";//No I18N
+    public static final String INFO_STATUS_RUNNING = "RUNNING";//No I18N
     public ContextList(List<String> contexts, List<SparkJobInfo> sparkJobInfo)
     {
         this.contexts=contexts;
@@ -23,12 +23,16 @@ public class ContextList {
         this.jobList=new JobList(sparkJobInfo);
     }
 
+    /**
+     * Get Map of JobType and Contexts
+     * @return
+     */
     private Map<String,List<String>> getJobTypeContextMap()
     {
         Map<String,List<String>> jobTypeContextMap=new HashMap<>();
         for(String contextName : contexts)
         {
-            String jobType=(contextName.split(jobTypeSeperator))[0];
+            String jobType=(contextName.split(JOBTYPESEPERATOR))[0];
             List<String> contexts=jobTypeContextMap.get(jobType);
             if(contexts==null)
             {
@@ -39,6 +43,12 @@ public class ContextList {
         }
         return jobTypeContextMap;
     }
+
+    /**
+     * Get Existing Available Contexts for the JobType
+     * @param jobType
+     * @return
+     */
     public String getExistingAvailableContext(JobType jobType)
     {
         String availableContext=getAvailableContextFortheNewJob(jobType);
@@ -48,6 +58,13 @@ public class ContextList {
         }
         return null;
     }
+
+    /**
+     * Get New Context Name
+     * @param jobType
+     * @return
+     * @throws ExecutorException
+     */
     public String getNewContext(JobType jobType) throws ExecutorException {
         int maxPoolSize=jobType.getMaxPool();
         int currentPoolSize=(jobTypeContextMap.containsKey(jobType.getJobType()))?jobTypeContextMap.get(jobType.getJobType()).size():0;
@@ -56,10 +73,16 @@ public class ContextList {
             return getNewContextName(jobType);
         }
         else{
-            throw new ExecutorException(null,"No Contexts can further be created for the jobType"+jobType);
+            throw new ExecutorException(null,"No Contexts can further be created for the jobType"+jobType);//No I18N
         }
 
     }
+
+    /**
+     * Get Avaliable Contexts for the Job
+     * @param jobType
+     * @return
+     */
     private String getAvailableContextFortheNewJob(JobType jobType)
     {
         List<String> availableContexts=jobList.getAvailableContexstForJob(contexts,jobType);
@@ -68,15 +91,31 @@ public class ContextList {
         return null;
     }
 
+    /**
+     * Get Contexts
+     * @param jobType
+     * @return
+     */
     private List<String> getContexts(JobType jobType) {
 
         return jobList.getAvailableContexstForJob(contexts,jobType);
     }
 
+    /**
+     * Get New Context Name for JobType
+     * @param jobType
+     * @return
+     */
     private String getNewContextName(JobType jobType)
     {
-        return jobType.getJobType()+jobTypeSeperator+getNextContextIndex(jobType);
+        return jobType.getJobType()+ JOBTYPESEPERATOR +getNextContextIndex(jobType);
     }
+
+    /**
+     * Get New Context Index
+     * @param jobType
+     * @return
+     */
     private int getNextContextIndex(JobType jobType)
     {
         int toReturn=1;
@@ -85,7 +124,7 @@ public class ContextList {
             List<String> contexts=jobTypeContextMap.get(jobType.getJobType());
             for(String contextName:contexts )
             {
-                int contextIndex=Integer.parseInt(contextName.split(jobTypeSeperator)[1]);
+                int contextIndex=Integer.parseInt(contextName.split(JOBTYPESEPERATOR)[1]);
                 if(toReturn<contextIndex)
                 {
                     toReturn=contextIndex;

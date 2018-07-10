@@ -8,8 +8,6 @@ import lombok.ToString;
 
 import java.util.Map;
 
-import static com.zoho.dpaas.comm.util.DPAASCommUtil.ExecutorType;
-
 @Getter @Setter @JsonIgnoreProperties(ignoreUnknown = true)@ToString
 public class ExecutorConfig {
     private Integer id;

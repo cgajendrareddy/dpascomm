@@ -30,7 +30,7 @@ public class SparkClusterConfig extends ExecutorConfig {
         if(masters != null && masters.size()>0){
             return masters.get(0).getHost();
         } else {
-            throw new IllegalArgumentException("No Masters Found in specified SparkCluster Config Id : "+this.getId());
+            throw new IllegalArgumentException("No Masters Found in specified SparkCluster Config Id : "+this.getId());//No I18N
         }
     }
 
@@ -42,7 +42,7 @@ public class SparkClusterConfig extends ExecutorConfig {
         if(masters != null && masters.size()>0){
             return masters.get(0).getPort();
         } else {
-            throw new IllegalArgumentException("No Masters Found in specified SparkCluster Config Id : "+this.getId());
+            throw new IllegalArgumentException("No Masters Found in specified SparkCluster Config Id : "+this.getId());//No I18N
         }
     }
 
@@ -54,7 +54,7 @@ public class SparkClusterConfig extends ExecutorConfig {
         if(masters != null && masters.size()>0){
             return masters.get(0).getWebUIPort();
         } else {
-            throw new IllegalArgumentException("No Masters Found in specified SparkCluster Config Id : "+this.getId());
+            throw new IllegalArgumentException("No Masters Found in specified SparkCluster Config Id : "+this.getId());//No I18N
         }
     }
 }
