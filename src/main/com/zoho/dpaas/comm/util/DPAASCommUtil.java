@@ -1,4 +1,3 @@
-//$Id$
 package com.zoho.dpaas.comm.util;
 
 import org.apache.http.impl.client.DefaultHttpClient;
