@@ -12,4 +12,5 @@ import java.util.List;
 public class HAExecutorConfig extends ExecutorConfig {
     @JsonProperty(value = "ids")//No I18N
     private List<Integer> ids;
+    private String mainClass;
 }

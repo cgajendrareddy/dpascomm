@@ -148,7 +148,7 @@ public class SparkJobServer extends AbstractExecutor implements Monitorable {
         }
         String contextName=getContextForTheJob(jobTypeObj);
         jobConf.put(CONTEXT,contextName);
-        jobConf.put(CLASSPATH,jobTypeObj.getClassPath()!=null?jobTypeObj.getClassPath():conf.getClassPath());
+        jobConf.put(CLASSPATH,jobTypeObj.getMainClass()!=null?jobTypeObj.getMainClass():conf.getClassPath());
         try{
             String data=SPARK_INPUT+"\"";
             try {

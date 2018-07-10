@@ -16,7 +16,7 @@ public class JobType  {
     private int minPool;
     private int maxPool;
     private int cores;
-    private String classPath;
+    private String mainClass;
     //TODO Add executr Instances for SparkCluster
     private String memory;
 

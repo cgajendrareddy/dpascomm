@@ -108,7 +108,7 @@ public class SparkMaster extends AbstractExecutor implements Monitorable {
         if(conf.getJars() !=null && !conf.getJars().isEmpty()){
             jobSubmit.usingJars(conf.getJars());
         }
-        jobSubmit.mainClass(jobTypeObj.getClassPath()!=null?jobTypeObj.getClassPath():conf.getClassPath());
+        jobSubmit.mainClass(jobTypeObj.getMainClass()!=null?jobTypeObj.getMainClass():conf.getMainClass());
         jobSubmit.appArgs(Arrays.asList(jobArgs));
         SparkPropertiesSpecification sparkPropertiesSpecification = jobSubmit.withProperties();
         //Insert ExecutorParams for executor creation

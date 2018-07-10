@@ -13,7 +13,7 @@ import java.util.Set;
 public class SparkClusterConfig extends ExecutorConfig {
     private List<Master> masters;
     private String sparkVersion;
-    private String classPath;
+    private String mainClass;
     private String appResource;
     private Set<String> jars;
     private String clusterMode;
