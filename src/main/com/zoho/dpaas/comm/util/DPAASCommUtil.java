@@ -26,10 +26,6 @@ public class DPAASCommUtil {
         }
     }
 
-    public enum ExecutorType {
-        SPARK_SJS, SPARK_CLUSTER, LOCAL_SPARK,SPARK_HA
-    }
-
     /**
      * Get Http Client
      * @return

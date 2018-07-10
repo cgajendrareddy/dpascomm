@@ -13,8 +13,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.zoho.dpaas.comm.util.DPAASCommUtil.ExecutorType;
-
 public class ExecutorFactory {
     public static final String EXECUTOR_CONFIG_PROVIDER_SYSPROP_KEY="dpaas.comm.executor.config.provider";//No I18N
     public static final String EXECUTOR_TYPE="type";//No I18N
@@ -22,6 +20,8 @@ public class ExecutorFactory {
     public static final String EXECUTOR_CONFIG_CLASS_NAME = "configClassName";//No I18N
     public static final String EXECUTORS = "executors";//No I18N
     public static final String DISABLED = "disabled";//No I18N
+    public static final String EXECUTOR_SPARK_SJS = "SPARK_SJS";//No I18N
+    public static final String EXECUTOR_SPARK_CLUSTER= "SPARK_CLUSTER";//No I18N
     private static ExecutorConfigProvider executorConfigProvider;
     private static ExecutorsList executorsList;
 
@@ -40,12 +40,12 @@ public class ExecutorFactory {
     public  static Executor getExecutor(JSONObject executorConfig) throws ExecutorConfigException {
 
 
-        ExecutorType executorType=ExecutorType.valueOf(executorConfig.getString(EXECUTOR_TYPE));
-        switch (executorType)
+        String executorType=executorConfig.getString(EXECUTOR_TYPE);
+        switch (executorType.toUpperCase())
         {
-            case SPARK_CLUSTER:
+            case EXECUTOR_SPARK_CLUSTER:
                 return new SparkCluster(executorConfig);
-            case SPARK_SJS:
+            case EXECUTOR_SPARK_SJS:
                 return new SparkJobServer(executorConfig);
             default:
                 try {
