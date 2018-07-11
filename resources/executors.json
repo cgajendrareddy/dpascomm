@@ -3,10 +3,11 @@
     {
       "id": 1,
       "name": "Local",
-      "disabled": true,
+      "disabled": false,
       "type": "LOCAL_SPARK",
-      "priority": 2,
+      "priority": 1,
       "mainClass": "com.zoho.dpaas.comm.executor.LocalSpark",
+      "className":"com.zoho.streamline.executor.LocalSparkExecutor",
       "jobTypes": {
         "datasettransformation": {
           "jobType": "datasettransformation",
@@ -53,49 +54,44 @@
     {
       "id": 2,
       "name": "Cluster1",
-      "disabled": true,
+      "disabled": false,
       "type": "SPARK_CLUSTER",
-      "priority": 1,
+      "priority": 2,
       "jobTypes": {
         "datasettransformation": {
           "jobType": "datasettransformation",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2G",
-          "mainClass": "com.zoho.dpaas.processor.ZDExecutor"
+          "memory": "2G"
         },
         "sampleextract": {
           "jobType": "sampleextract",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2G",
-          "mainClass": "com.zoho.dpaas.processor.ZDExecutor"
+          "memory": "2G"
         },
         "dsauditstatefile": {
           "jobType": "dsauditstatefile",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2g",
-          "mainClass": "com.zoho.dpaas.processor.ZDExecutor"
+          "memory": "2g"
         },
         "rawdsaudittransformation": {
           "jobType": "rawdsaudittransformation",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2G",
-          "mainClass": "com.zoho.dpaas.processor.ZDExecutor"
+          "memory": "2G"
         },
         "erroraudit": {
           "jobType": "erroraudit",
           "minPool": 2,
           "maxPool": 3,
           "cores": 2,
-          "memory": "2G",
-          "mainClass": "com.zoho.dpaas.processor.ZDExecutor"
+          "memory": "2G"
         }
       },
       "masters": [
@@ -118,12 +114,10 @@
       "httpScheme": "http",
       "appName": "SparkStandAlone",
       "config": {
-        "spark.driver.supervise": "true",
+        "spark.driver.supervise": "false",
         "spark.driver.memory": "2g",
         "spark.driver.cores": 2,
-        "spark.executor.instances": 2,
-        "spark.driver.extraJavaOptions":"Dorg.xerial.snappy.tempdir=/home/sas/zdpas/spark/snappydata",
-        "spark.driver.extraJavaOptions":"Dorg.xerial.snappy.tempdir=/home/sas/zdpas/spark/snappydata"
+        "spark.executor.instances": 1
       },
       "environmentVariables": {
         "SPARK_ENV_LOADED": "1"
@@ -132,7 +126,7 @@
     {
       "id": 3,
       "name": "SJS1",
-      "disabled": false,
+      "disabled": true,
       "type": "SPARK_SJS",
       "priority": 3,
       "sparkClusterId": 2,
